@@ -1,50 +1,61 @@
-// ─── 원본 데이터 ────────────────────────────────────────────────────
+// ─── 원본 데이터 (판매중 + 진열 필터 적용, 5/9~5/12 기준) ──────────
 const RAW = [
-  { reg_date:'2026-04-21', name:'ps5878',  views:1886, cart_count:64,  purchase_count:20, cart_rate:3.4,  purchase_rate:1.1, total_rate:4.5,  sales:660000,   dwell:55 },
-  { reg_date:'2026-04-13', name:'sk7817',  views:456,  cart_count:76,  purchase_count:14, cart_rate:16.7, purchase_rate:3.1, total_rate:19.7, sales:461100,   dwell:40 },
-  { reg_date:'2026-01-15', name:'bs8614',  views:424,  cart_count:75,  purchase_count:10, cart_rate:17.7, purchase_rate:2.4, total_rate:20.0, sales:286000,   dwell:60 },
-  { reg_date:'2023-05-23', name:'bs7655',  views:1587, cart_count:321, purchase_count:45, cart_rate:20.2, purchase_rate:2.8, total_rate:23.1, sales:1620000,  dwell:37 },
-  { reg_date:'2026-04-24', name:'ps5889',  views:912,  cart_count:27,  purchase_count:6,  cart_rate:3.0,  purchase_rate:0.7, total_rate:3.6,  sales:336000,   dwell:38 },
-  { reg_date:'2026-04-24', name:'ts5020',  views:2,    cart_count:0,   purchase_count:0,  cart_rate:0.0,  purchase_rate:0.0, total_rate:0.0,  sales:0,        dwell:4  },
-  { reg_date:'2026-04-21', name:'cd3673',  views:513,  cart_count:14,  purchase_count:1,  cart_rate:2.7,  purchase_rate:0.2, total_rate:2.9,  sales:28900,    dwell:39 },
-  { reg_date:'2026-04-21', name:'st3084',  views:543,  cart_count:17,  purchase_count:1,  cart_rate:3.1,  purchase_rate:0.2, total_rate:3.3,  sales:42000,    dwell:45 },
-  { reg_date:'2026-04-21', name:'sk7835',  views:360,  cart_count:11,  purchase_count:1,  cart_rate:3.1,  purchase_rate:0.3, total_rate:3.3,  sales:29900,    dwell:41 },
-  { reg_date:'2026-04-21', name:'ts5014',  views:344,  cart_count:5,   purchase_count:0,  cart_rate:1.5,  purchase_rate:0.0, total_rate:1.5,  sales:0,        dwell:26 },
-  { reg_date:'2026-04-17', name:'ts5012',  views:457,  cart_count:9,   purchase_count:2,  cart_rate:2.0,  purchase_rate:0.4, total_rate:2.4,  sales:38000,    dwell:34 },
-  { reg_date:'2026-04-16', name:'sk7824',  views:908,  cart_count:85,  purchase_count:13, cart_rate:9.4,  purchase_rate:1.4, total_rate:10.8, sales:546000,   dwell:40 },
-  { reg_date:'2026-04-16', name:'ts5003',  views:8954, cart_count:1198,purchase_count:189,cart_rate:13.4, purchase_rate:2.1, total_rate:15.5, sales:4687100,  dwell:43 },
-  { reg_date:'2026-04-16', name:'op16386', views:1571, cart_count:104, purchase_count:12, cart_rate:6.6,  purchase_rate:0.8, total_rate:7.4,  sales:648000,   dwell:36 },
-  { reg_date:'2026-04-16', name:'op16385', views:1,    cart_count:0,   purchase_count:0,  cart_rate:0.0,  purchase_rate:0.0, total_rate:0.0,  sales:0,        dwell:0  },
-  { reg_date:'2026-04-10', name:'sk7815',  views:647,  cart_count:48,  purchase_count:12, cart_rate:7.4,  purchase_rate:1.9, total_rate:9.3,  sales:408000,   dwell:36 },
-  { reg_date:'2026-04-10', name:'ps5864',  views:421,  cart_count:42,  purchase_count:7,  cart_rate:10.0, purchase_rate:1.7, total_rate:11.6, sales:388500,   dwell:44 },
-  { reg_date:'2026-04-07', name:'nt5529',  views:576,  cart_count:130, purchase_count:18, cart_rate:22.6, purchase_rate:3.1, total_rate:25.7, sales:718200,   dwell:43 },
-  { reg_date:'2026-04-07', name:'nt5528',  views:391,  cart_count:111, purchase_count:15, cart_rate:28.4, purchase_rate:3.8, total_rate:32.2, sales:447000,   dwell:43 },
-  { reg_date:'2026-04-07', name:'nt5524',  views:1378, cart_count:152, purchase_count:35, cart_rate:11.0, purchase_rate:2.5, total_rate:13.6, sales:865900,   dwell:37 },
-  { reg_date:'2026-04-07', name:'nt5523',  views:2198, cart_count:417, purchase_count:75, cart_rate:19.0, purchase_rate:3.4, total_rate:22.4, sales:1860000,  dwell:36 },
-  { reg_date:'2026-04-07', name:'cd3666',  views:690,  cart_count:101, purchase_count:17, cart_rate:14.6, purchase_rate:2.5, total_rate:17.1, sales:544000,   dwell:44 },
-  { reg_date:'2026-04-07', name:'cd3665',  views:2433, cart_count:493, purchase_count:106,cart_rate:20.3, purchase_rate:4.4, total_rate:24.6, sales:3031600,  dwell:47 },
-  { reg_date:'2026-04-06', name:'sk7810',  views:184,  cart_count:15,  purchase_count:2,  cart_rate:8.2,  purchase_rate:1.1, total_rate:9.2,  sales:119000,   dwell:53 },
-  { reg_date:'2026-03-31', name:'ps5858',  views:1,    cart_count:0,   purchase_count:0,  cart_rate:0.0,  purchase_rate:0.0, total_rate:0.0,  sales:0,        dwell:0  },
-  { reg_date:'2026-03-27', name:'op16363', views:527,  cart_count:6,   purchase_count:0,  cart_rate:1.1,  purchase_rate:0.0, total_rate:1.1,  sales:0,        dwell:29 },
-  { reg_date:'2026-03-27', name:'ts4995',  views:853,  cart_count:144, purchase_count:31, cart_rate:16.9, purchase_rate:3.6, total_rate:20.5, sales:1023000,  dwell:42 },
-  { reg_date:'2026-03-20', name:'ps5854',  views:429,  cart_count:62,  purchase_count:7,  cart_rate:14.5, purchase_rate:1.6, total_rate:16.1, sales:369600,   dwell:42 },
-  { reg_date:'2026-01-06', name:'bs8609',  views:1683, cart_count:280, purchase_count:57, cart_rate:16.6, purchase_rate:3.4, total_rate:20.0, sales:2251500,  dwell:45 },
-  { reg_date:'2026-01-06', name:'ts4844',  views:217,  cart_count:76,  purchase_count:13, cart_rate:35.0, purchase_rate:6.0, total_rate:41.0, sales:412500,   dwell:43 },
-  { reg_date:'2025-07-22', name:'bs8379',  views:40,   cart_count:2,   purchase_count:0,  cart_rate:5.0,  purchase_rate:0.0, total_rate:5.0,  sales:0,        dwell:23 },
-  { reg_date:'2025-05-19', name:'bs8220',  views:20,   cart_count:0,   purchase_count:0,  cart_rate:0.0,  purchase_rate:0.0, total_rate:0.0,  sales:0,        dwell:38 },
-  { reg_date:'2025-05-12', name:'bs8212',  views:51,   cart_count:5,   purchase_count:2,  cart_rate:9.8,  purchase_rate:3.9, total_rate:13.7, sales:119600,   dwell:35 },
-  { reg_date:'2024-07-17', name:'op15829', views:60,   cart_count:1,   purchase_count:0,  cart_rate:1.7,  purchase_rate:0.0, total_rate:1.7,  sales:0,        dwell:56 },
-  { reg_date:'2024-06-11', name:'op15785', views:53,   cart_count:2,   purchase_count:0,  cart_rate:3.8,  purchase_rate:0.0, total_rate:3.8,  sales:0,        dwell:45 },
-  { reg_date:'2023-05-24', name:'ts3774',  views:2130, cart_count:469, purchase_count:87, cart_rate:22.0, purchase_rate:4.1, total_rate:26.1, sales:1609500,  dwell:39 },
-  { reg_date:'2022-06-03', name:'bs7026',  views:78,   cart_count:4,   purchase_count:7,  cart_rate:5.1,  purchase_rate:9.0, total_rate:14.1, sales:154000,   dwell:55 },
-  { reg_date:'2022-05-13', name:'op13968', views:37,   cart_count:1,   purchase_count:0,  cart_rate:2.7,  purchase_rate:0.0, total_rate:2.7,  sales:0,        dwell:14 },
-  { reg_date:'2022-05-09', name:'ts3207',  views:442,  cart_count:13,  purchase_count:0,  cart_rate:2.9,  purchase_rate:0.0, total_rate:2.9,  sales:0,        dwell:46 },
-  { reg_date:'2021-12-17', name:'ps3514',  views:809,  cart_count:102, purchase_count:13, cart_rate:12.6, purchase_rate:1.6, total_rate:14.2, sales:383500,   dwell:45 },
-  { reg_date:'2021-06-28', name:'bs6225',  views:375,  cart_count:106, purchase_count:17, cart_rate:28.3, purchase_rate:4.5, total_rate:32.8, sales:761600,   dwell:39 },
-  { reg_date:'2021-06-15', name:'ts2631',  views:24,   cart_count:0,   purchase_count:1,  cart_rate:0.0,  purchase_rate:4.2, total_rate:4.2,  sales:15000,    dwell:46 },
-  { reg_date:'2020-06-05', name:'bs5193',  views:70,   cart_count:3,   purchase_count:5,  cart_rate:4.3,  purchase_rate:7.1, total_rate:11.4, sales:99500,    dwell:59 },
-  { reg_date:'2026-04-23', name:'ps5887',  views:1420, cart_count:89,  purchase_count:19, cart_rate:6.3,  purchase_rate:1.3, total_rate:7.6,  sales:912000,   dwell:42 },
-  { reg_date:'2026-04-16', name:'bs8761',  views:1758, cart_count:133, purchase_count:47, cart_rate:7.6,  purchase_rate:2.7, total_rate:10.2, sales:1024600,  dwell:45 },
+  { reg_date:'2026-04-21', name:'ts5014',  views:426,  cart_count:5,   purchase_count:0,  cart_rate:1.2,  purchase_rate:0.0, total_rate:1.2,  sales:0,        dwell:30, stock:0   },
+  { reg_date:'2026-04-21', name:'ps5878',  views:1980, cart_count:70,  purchase_count:21, cart_rate:3.5,  purchase_rate:1.1, total_rate:4.6,  sales:693000,   dwell:55, stock:0   },
+  { reg_date:'2026-04-16', name:'bs8762',  views:845,  cart_count:91,  purchase_count:13, cart_rate:10.8, purchase_rate:1.5, total_rate:12.3, sales:348400,   dwell:43, stock:62  },
+  { reg_date:'2026-04-16', name:'op16387', views:2792, cart_count:354, purchase_count:70, cart_rate:12.7, purchase_rate:2.5, total_rate:15.2, sales:2002000,  dwell:45, stock:0   },
+  { reg_date:'2026-04-16', name:'ts5003',  views:9406, cart_count:1232,purchase_count:201,cart_rate:13.1, purchase_rate:2.1, total_rate:15.2, sales:4998200,  dwell:43, stock:24  },
+  { reg_date:'2026-04-13', name:'sk7817',  views:492,  cart_count:77,  purchase_count:14, cart_rate:15.7, purchase_rate:2.8, total_rate:18.5, sales:461100,   dwell:38, stock:0   },
+  { reg_date:'2026-04-07', name:'cd3668',  views:761,  cart_count:130, purchase_count:30, cart_rate:17.1, purchase_rate:3.9, total_rate:21.0, sales:1197000,  dwell:44, stock:70  },
+  { reg_date:'2026-03-31', name:'ps5860',  views:1086, cart_count:113, purchase_count:23, cart_rate:10.4, purchase_rate:2.1, total_rate:12.5, sales:823400,   dwell:45, stock:88  },
+  { reg_date:'2026-03-24', name:'bs8734',  views:406,  cart_count:86,  purchase_count:12, cart_rate:21.2, purchase_rate:3.0, total_rate:24.1, sales:340400,   dwell:51, stock:200 },
+  { reg_date:'2026-01-15', name:'bs8614',  views:496,  cart_count:76,  purchase_count:15, cart_rate:15.3, purchase_rate:3.0, total_rate:18.3, sales:429000,   dwell:62, stock:262 },
+  { reg_date:'2025-04-30', name:'nt5100',  views:84,   cart_count:24,  purchase_count:1,  cart_rate:28.6, purchase_rate:1.2, total_rate:29.8, sales:28000,    dwell:49, stock:33  },
+  { reg_date:'2025-04-03', name:'jk2990',  views:269,  cart_count:26,  purchase_count:6,  cart_rate:9.7,  purchase_rate:2.2, total_rate:11.9, sales:171350,   dwell:35, stock:28  },
+  { reg_date:'2024-04-18', name:'op15739', views:0,    cart_count:0,   purchase_count:0,  cart_rate:0.0,  purchase_rate:0.0, total_rate:0.0,  sales:0,        dwell:0,  stock:0   },
+  { reg_date:'2023-07-04', name:'ts3812',  views:1,    cart_count:0,   purchase_count:0,  cart_rate:0.0,  purchase_rate:0.0, total_rate:0.0,  sales:0,        dwell:0,  stock:0   },
+  { reg_date:'2023-05-23', name:'bs7655',  views:1721, cart_count:332, purchase_count:50, cart_rate:19.3, purchase_rate:2.9, total_rate:22.2, sales:1800000,  dwell:38, stock:5   },
+  { reg_date:'2023-05-11', name:'ps4543',  views:461,  cart_count:72,  purchase_count:14, cart_rate:15.6, purchase_rate:3.0, total_rate:18.7, sales:694400,   dwell:45, stock:42  },
+  { reg_date:'2023-04-26', name:'ps4533',  views:2270, cart_count:387, purchase_count:96, cart_rate:17.0, purchase_rate:4.2, total_rate:21.3, sales:3753400,  dwell:56, stock:552 },
+  { reg_date:'2023-04-26', name:'cd2859',  views:0,    cart_count:0,   purchase_count:0,  cart_rate:0.0,  purchase_rate:0.0, total_rate:0.0,  sales:0,        dwell:0,  stock:0   },
+  { reg_date:'2023-04-03', name:'op15138', views:1,    cart_count:0,   purchase_count:0,  cart_rate:0.0,  purchase_rate:0.0, total_rate:0.0,  sales:0,        dwell:0,  stock:0   },
+  { reg_date:'2023-03-08', name:'ts3692',  views:776,  cart_count:119, purchase_count:26, cart_rate:15.3, purchase_rate:3.4, total_rate:18.7, sales:644800,   dwell:40, stock:23  },
+  { reg_date:'2026-04-24', name:'ps5889',  views:969,  cart_count:31,  purchase_count:6,  cart_rate:3.2,  purchase_rate:0.6, total_rate:3.8,  sales:336000,   dwell:40, stock:0   },
+  { reg_date:'2026-04-21', name:'cd3673',  views:627,  cart_count:16,  purchase_count:2,  cart_rate:2.6,  purchase_rate:0.3, total_rate:2.9,  sales:57800,    dwell:37, stock:0   },
+  { reg_date:'2026-04-21', name:'st3084',  views:680,  cart_count:25,  purchase_count:1,  cart_rate:3.7,  purchase_rate:0.1, total_rate:3.8,  sales:42000,    dwell:50, stock:0   },
+  { reg_date:'2026-04-21', name:'sk7835',  views:445,  cart_count:11,  purchase_count:3,  cart_rate:2.5,  purchase_rate:0.7, total_rate:3.1,  sales:89700,    dwell:36, stock:0   },
+  { reg_date:'2026-04-17', name:'ts5012',  views:477,  cart_count:10,  purchase_count:2,  cart_rate:2.1,  purchase_rate:0.4, total_rate:2.5,  sales:38000,    dwell:36, stock:0   },
+  { reg_date:'2026-04-16', name:'sk7824',  views:985,  cart_count:88,  purchase_count:14, cart_rate:8.9,  purchase_rate:1.4, total_rate:10.4, sales:588000,   dwell:41, stock:7   },
+  { reg_date:'2026-04-16', name:'op16386', views:1672, cart_count:107, purchase_count:14, cart_rate:6.4,  purchase_rate:0.8, total_rate:7.2,  sales:756000,   dwell:36, stock:0   },
+  { reg_date:'2026-04-10', name:'sk7815',  views:695,  cart_count:47,  purchase_count:13, cart_rate:6.8,  purchase_rate:1.9, total_rate:8.6,  sales:442000,   dwell:36, stock:0   },
+  { reg_date:'2026-04-10', name:'ps5864',  views:446,  cart_count:42,  purchase_count:8,  cart_rate:9.4,  purchase_rate:1.8, total_rate:11.2, sales:444000,   dwell:44, stock:0   },
+  { reg_date:'2026-04-07', name:'nt5529',  views:630,  cart_count:131, purchase_count:19, cart_rate:20.8, purchase_rate:3.0, total_rate:23.8, sales:758100,   dwell:42, stock:76  },
+  { reg_date:'2026-04-07', name:'nt5528',  views:432,  cart_count:116, purchase_count:15, cart_rate:26.9, purchase_rate:3.5, total_rate:30.3, sales:447000,   dwell:44, stock:225 },
+  { reg_date:'2026-04-07', name:'nt5524',  views:1433, cart_count:155, purchase_count:37, cart_rate:10.8, purchase_rate:2.6, total_rate:13.4, sales:915500,   dwell:38, stock:88  },
+  { reg_date:'2026-04-07', name:'nt5523',  views:2340, cart_count:429, purchase_count:82, cart_rate:18.3, purchase_rate:3.5, total_rate:21.8, sales:2033600,  dwell:35, stock:25  },
+  { reg_date:'2026-04-07', name:'cd3666',  views:758,  cart_count:107, purchase_count:18, cart_rate:14.1, purchase_rate:2.4, total_rate:16.5, sales:576000,   dwell:44, stock:128 },
+  { reg_date:'2026-04-07', name:'cd3665',  views:2633, cart_count:509, purchase_count:113,cart_rate:19.3, purchase_rate:4.3, total_rate:23.6, sales:3231800,  dwell:47, stock:118 },
+  { reg_date:'2026-04-06', name:'sk7810',  views:253,  cart_count:17,  purchase_count:3,  cart_rate:6.7,  purchase_rate:1.2, total_rate:7.9,  sales:178500,   dwell:46, stock:0   },
+  { reg_date:'2026-03-27', name:'op16363', views:619,  cart_count:11,  purchase_count:1,  cart_rate:1.8,  purchase_rate:0.2, total_rate:1.9,  sales:49500,    dwell:32, stock:225 },
+  { reg_date:'2026-03-27', name:'ts4995',  views:926,  cart_count:151, purchase_count:31, cart_rate:16.3, purchase_rate:3.3, total_rate:19.7, sales:1023000,  dwell:41, stock:35  },
+  { reg_date:'2026-03-20', name:'ps5854',  views:485,  cart_count:64,  purchase_count:8,  cart_rate:13.2, purchase_rate:1.6, total_rate:14.8, sales:422400,   dwell:41, stock:105 },
+  { reg_date:'2026-01-06', name:'bs8609',  views:1845, cart_count:291, purchase_count:63, cart_rate:15.8, purchase_rate:3.4, total_rate:19.2, sales:2488500,  dwell:46, stock:264 },
+  { reg_date:'2026-01-06', name:'ts4844',  views:243,  cart_count:77,  purchase_count:13, cart_rate:31.7, purchase_rate:5.3, total_rate:37.0, sales:412500,   dwell:43, stock:57  },
+  { reg_date:'2025-07-22', name:'bs8379',  views:60,   cart_count:3,   purchase_count:1,  cart_rate:5.0,  purchase_rate:1.7, total_rate:6.7,  sales:51000,    dwell:27, stock:0   },
+  { reg_date:'2025-05-19', name:'bs8220',  views:23,   cart_count:0,   purchase_count:0,  cart_rate:0.0,  purchase_rate:0.0, total_rate:0.0,  sales:0,        dwell:38, stock:0   },
+  { reg_date:'2025-05-12', name:'bs8212',  views:61,   cart_count:5,   purchase_count:2,  cart_rate:8.2,  purchase_rate:3.3, total_rate:11.5, sales:119600,   dwell:42, stock:0   },
+  { reg_date:'2024-07-17', name:'op15829', views:73,   cart_count:3,   purchase_count:0,  cart_rate:4.1,  purchase_rate:0.0, total_rate:4.1,  sales:0,        dwell:59, stock:0   },
+  { reg_date:'2024-06-11', name:'op15785', views:72,   cart_count:3,   purchase_count:0,  cart_rate:4.2,  purchase_rate:0.0, total_rate:4.2,  sales:0,        dwell:53, stock:0   },
+  { reg_date:'2023-05-24', name:'ts3774',  views:2264, cart_count:480, purchase_count:88, cart_rate:21.2, purchase_rate:3.9, total_rate:25.1, sales:1628000,  dwell:39, stock:82  },
+  { reg_date:'2022-06-03', name:'bs7026',  views:100,  cart_count:6,   purchase_count:7,  cart_rate:6.0,  purchase_rate:7.0, total_rate:13.0, sales:154000,   dwell:53, stock:0   },
+  { reg_date:'2022-05-13', name:'op13968', views:43,   cart_count:1,   purchase_count:0,  cart_rate:2.3,  purchase_rate:0.0, total_rate:2.3,  sales:0,        dwell:16, stock:0   },
+  { reg_date:'2022-05-09', name:'ts3207',  views:465,  cart_count:13,  purchase_count:0,  cart_rate:2.8,  purchase_rate:0.0, total_rate:2.8,  sales:0,        dwell:45, stock:0   },
+  { reg_date:'2021-12-17', name:'ps3514',  views:857,  cart_count:107, purchase_count:13, cart_rate:12.5, purchase_rate:1.5, total_rate:14.0, sales:383500,   dwell:45, stock:0   },
+  { reg_date:'2021-06-28', name:'bs6225',  views:405,  cart_count:109, purchase_count:18, cart_rate:26.9, purchase_rate:4.4, total_rate:31.4, sales:806400,   dwell:39, stock:48  },
+  { reg_date:'2021-06-15', name:'ts2631',  views:32,   cart_count:0,   purchase_count:1,  cart_rate:0.0,  purchase_rate:3.1, total_rate:3.1,  sales:15000,    dwell:43, stock:0   },
+  { reg_date:'2020-06-05', name:'bs5193',  views:93,   cart_count:6,   purchase_count:3,  cart_rate:6.5,  purchase_rate:3.2, total_rate:9.7,  sales:59700,    dwell:53, stock:0   },
+  { reg_date:'2026-04-23', name:'ps5887',  views:1479, cart_count:90,  purchase_count:19, cart_rate:6.1,  purchase_rate:1.3, total_rate:7.4,  sales:912000,   dwell:43, stock:0   },
+  { reg_date:'2026-04-16', name:'bs8761',  views:1850, cart_count:134, purchase_count:48, cart_rate:7.2,  purchase_rate:2.6, total_rate:9.8,  sales:1046400,  dwell:45, stock:0   },
 ];
 
 // ─── 채점 함수 ───────────────────────────────────────────────────────
@@ -114,6 +125,13 @@ function scoreColor(score) {
   return '#ef4444';
 }
 
+function stockBadge(stock, sales) {
+  if (stock === 0 && sales > 0) return `<span class="stock-badge stock-zero">재고없음 ⚠️</span>`;
+  if (stock > 0 && stock <= 5)  return `<span class="stock-badge stock-low">재고 ${stock}개 ⚠️</span>`;
+  if (stock > 0)                return `<span class="stock-badge stock-ok">재고 ${stock}개</span>`;
+  return '';
+}
+
 function buildGauge(score, size = 80) {
   const r = (size - 10) / 2;
   const circ = 2 * Math.PI * r;
@@ -136,7 +154,7 @@ function buildGauge(score, size = 80) {
 }
 
 // ─── 헤더 메타 ──────────────────────────────────────────────────────
-document.getElementById('analysis-date').textContent = '기준일: 2026-05-12';
+document.getElementById('analysis-date').textContent = '조회기간: 2026.5.9 ~ 5.12';
 document.getElementById('product-count').textContent = `총 ${products.length}개 상품`;
 
 // ─── KPI ─────────────────────────────────────────────────────────────
@@ -174,7 +192,7 @@ document.getElementById('hero-grid').innerHTML = heroList.map(p => `
   <div class="hero-card">
     <div class="hero-card-top">
       <div>
-        <div class="hero-name">${p.name}</div>
+        <div class="hero-name">${p.name} ${stockBadge(p.stock, p.sales)}</div>
         <div class="hero-regdate">등록일 ${p.reg_date}</div>
       </div>
       ${buildGauge(p.hero_score, 80)}
@@ -470,6 +488,7 @@ function renderTable() {
       <td style="color:${p.cart_rate >= 15 ? '#3b82f6' : '#f0f0f0'}">${p.cart_rate}%</td>
       <td>${p.sales > 0 ? fmtW(p.sales) + '원' : '—'}</td>
       <td>${p.dwell}초</td>
+      <td>${stockBadge(p.stock, p.sales) || `<span style="color:#555">${p.stock}</span>`}</td>
       <td><span class="priority-badge ${priorityClass(p.priority)}">${p.priority}</span></td>
     </tr>`).join('');
 }

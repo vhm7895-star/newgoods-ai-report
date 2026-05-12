@@ -21,7 +21,7 @@ const COOKIE_FILE = path.join(__dirname, '..', '.session-cookies.json');
 const OUT_CSV     = path.join(__dirname, '..', 'data', 'newgoods-data.csv');
 const DEBUG_SHOT  = path.join(__dirname, '..', 'debug-screenshot.png');
 
-const CSV_HEADER = '상품등록일,상품명,조회수,장바구니 수,구매 수,장바구니 비율,구매 비율,총 비율,판매금액,평균 체류시간(초)';
+const CSV_HEADER = '상품등록일,상품명,조회수,장바구니 수,구매 수,장바구니 비율,구매 비율,총 비율,판매금액,평균 체류시간(초),재고';
 
 // 컬럼 헤더 텍스트 → 필드명 매핑 (부분 일치)
 const COL_PATTERNS = [
@@ -35,6 +35,7 @@ const COL_PATTERNS = [
   { patterns: ['총 비율', '총비율'],             field: 'total_rate' },
   { patterns: ['판매금액', '판매 금액'],         field: 'sales' },
   { patterns: ['체류시간', '체류 시간'],         field: 'dwell' },
+  { patterns: ['총 재고', '재고'],              field: 'stock' },
 ];
 
 // ─── 헬퍼 ────────────────────────────────────────────────────────
@@ -58,6 +59,29 @@ function escapeCsv(s) {
   if (!s) return '';
   const str = String(s).replace(/\r?\n/g, ' ');
   return str.includes(',') || str.includes('"') ? `"${str.replace(/"/g, '""')}"` : str;
+}
+
+// ─── 필터 설정 (판매중 + 진열) ───────────────────────────────────
+async function setFilters(page) {
+  log('필터 설정: 판매중 + 진열');
+  try {
+    // 판매상태 = 판매중
+    const saleRow = page.locator('tr').filter({ has: page.locator('th', { hasText: '판매중' }) }).first();
+    await saleRow.locator('select').selectOption('판매중');
+
+    // 진열여부 = 진열
+    const displayRow = page.locator('tr').filter({ has: page.locator('th', { hasText: '진열 여부' }) }).first();
+    await displayRow.locator('select').selectOption('진열');
+
+    // 검색 버튼 클릭 (필터 폼의 검색 버튼, 상단 통합검색과 구분)
+    await page.getByRole('button', { name: '검색', exact: true }).click();
+    await page.waitForLoadState('networkidle').catch(() => {});
+    await page.waitForSelector('table tbody tr', { timeout: 10000 });
+
+    ok('필터 적용 완료 (판매중 + 진열)');
+  } catch (e) {
+    log(`⚠️ 필터 설정 실패: ${e.message} — 기본 데이터로 진행`);
+  }
 }
 
 // ─── 쿠키 로드/저장 ──────────────────────────────────────────────
@@ -231,6 +255,7 @@ function buildCsv(data) {
       get(row, 'total_rate').replace(/[%\s]/g, ''),
       sales ? `"${sales}"` : '0',
       dwell || '0',
+      cleanNum(get(row, 'stock')) || '0',
     ].join(','));
   });
 
@@ -279,6 +304,9 @@ async function main() {
     const cookies = await context.cookies();
     saveCookies(cookies);
     log('세션 쿠키 저장 완료');
+
+    // 필터 적용: 판매중 + 진열
+    await setFilters(page);
 
     // 테이블 추출
     log('데이터 추출 중...');

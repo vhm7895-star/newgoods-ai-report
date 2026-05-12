@@ -670,6 +670,19 @@ body {
 .p-normal { background: rgba(234,179,8,0.12);  color: #fbbf24; }
 .p-low    { background: rgba(16,185,129,0.12); color: #34d399; }
 
+/* ── Stock badges ── */
+.stock-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.stock-zero { background: rgba(239,68,68,0.15);  color: #f87171; }
+.stock-low  { background: rgba(249,115,22,0.15); color: #fb923c; }
+.stock-ok   { background: rgba(16,185,129,0.10); color: #6ee7b7; }
+
 /* ── Footer ── */
 .footer {
   text-align: center;

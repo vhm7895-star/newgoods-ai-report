@@ -24,7 +24,7 @@ function parseCSV(text) {
       else { cur += ch; }
     }
     cols.push(cur.trim());
-    if (cols.length >= 10 && cols[1]) rows.push(cols);
+    if (cols.length >= 10 && cols[1]) rows.push(cols); // 재고 컬럼(11번째)은 없어도 허용
   }
   return rows;
 }
@@ -88,7 +88,8 @@ function getPriority(p) {
 // ─── 추천 액션 ───────────────────────────────────────────────────
 function getActions(p) {
   const { views: v, cart_count: cc, purchase_count: pc, cart_rate: cr,
-          purchase_rate: pr, total_rate: tr, dwell: dw, sales: sl, hero_score: sc } = p;
+          purchase_rate: pr, total_rate: tr, dwell: dw, sales: sl,
+          hero_score: sc, stock } = p;
   const ab = cc - pc;
   const acts = [];
 
@@ -112,8 +113,23 @@ function getActions(p) {
     acts.push(`[ACT-07] **가격 점검** — 장바구니→구매 전환율 ${Math.round(pc / cc * 100)}%. 경쟁 상품 대비 가격 포지셔닝 재검토`);
   else if (cc >= 5 && pc === 0)
     acts.push('[ACT-07] **가격 점검** — 장바구니 후 전원 이탈. 가격 부담 여부 즉시 점검');
-  if (sl >= 500000 && pc >= 10)
-    acts.push('[ACT-08] **재고 확보** — 판매 실적 우수. 품절 방지 위해 재고 수량 즉시 확인 및 발주');
+
+  // 재고 기반 ACT-08 / ACT-09
+  if (stock !== null) {
+    if (stock === 0 && sl > 0)
+      acts.push('[ACT-08] **재고 긴급 확보** ⚠️ — 판매 실적 있으나 현재 재고 0. 즉시 발주 또는 입고 일정 확인 필요');
+    else if (stock > 0 && stock <= 5 && sl >= 200000)
+      acts.push(`[ACT-08] **재고 확보** — 재고 ${stock}개만 남음. 현재 판매 속도 대비 품절 임박 — 즉시 추가 발주`);
+    else if (sl >= 500000 && pc >= 10)
+      acts.push('[ACT-08] **재고 확보** — 판매 실적 우수. 품절 방지 위해 재고 수량 즉시 확인 및 발주');
+
+    if (stock >= 30 && pc === 0 && v >= 50)
+      acts.push(`[ACT-09] **재고 소진 유도** — 재고 ${stock}개 보유 중이나 구매 0건. 할인·번들 구성으로 재고 정리 우선 검토`);
+  } else {
+    if (sl >= 500000 && pc >= 10)
+      acts.push('[ACT-08] **재고 확보** — 판매 실적 우수. 품절 방지 위해 재고 수량 즉시 확인 및 발주');
+  }
+
   if (dw >= 45)
     acts.push('[ACT-10] **코디 상품 연결** — 체류시간 높아 추가 탐색 의향 존재. 하단 코디 상품 배치로 교차 구매 유도');
   if (pr >= 3 && v < 500)
@@ -180,6 +196,7 @@ function main() {
       total_rate:     num(r[7]),
       sales:          Math.round(num(r[8])),
       dwell:          Math.round(num(r[9])),
+      stock:          r[10] !== undefined ? Math.round(num(r[10])) : null,
     };
     const sp = scorePurchaseRate(p.purchase_rate);
     const sc = scoreCartRate(p.cart_rate);
@@ -297,6 +314,7 @@ function main() {
         `| 판매금액 | ${p.score_sales}pt / 20pt | ${p.sales.toLocaleString()}원 |`,
         `| 평균 체류시간 | ${p.score_dwell}pt / 10pt | ${p.dwell}초 |`,
         `| **합계** | **${p.hero_score}pt / 100pt** | — |`,
+        `| 재고 | — | ${p.stock !== null ? p.stock + '개' : '데이터 없음'} |`,
         '',
         '**상품 상태**',
         '',
