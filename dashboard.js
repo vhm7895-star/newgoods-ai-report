@@ -373,7 +373,7 @@ new Chart(document.getElementById('bubbleChart'), {
         callbacks: {
           label: ctx => {
             const d = ctx.raw;
-            return [`${d.name}`, `조회 ${fmt(d.x)}회`, `판매 ${fmtW(d.y * 10000)}원`, `점수 ${d.score}pt`];
+            return [`${d.name}`, `조회 ${fmt(d.x)}회`, `판매 ${fmtW(d.y * 10000)}원`, `점수 ${d.score}점`];
           }
         }
       }
@@ -444,7 +444,7 @@ document.getElementById('improve-grid').innerHTML = dangerList.map(p => {
   return `
   <div class="improve-card">
     <div class="improve-name">${p.name}</div>
-    <div class="improve-score">${p.hero_score}<span>pt</span></div>
+    <div class="improve-score">${p.hero_score}<span>점</span></div>
     <div class="improve-issue">${issue}<br/>조회 ${fmt(p.views)} · 구매 ${p.purchase_rate}%</div>
   </div>`;
 }).join('');
