@@ -235,6 +235,116 @@ npm run extract && npm run analyze
 
 ---
 
+## 매일 자동 실행 설정 (Windows 작업 스케줄러)
+
+매일 오전 9시에 **추출 → 분석 → GitHub Push** 를 자동으로 실행합니다.
+
+### 생성 파일
+
+| 파일 | 역할 |
+|------|------|
+| `run-daily.bat` | 추출 → 분석 → Git Push 순서 실행, 로그 기록 |
+| `setup-task.ps1` | Windows 작업 스케줄러에 작업 등록 |
+| `logs/daily.log` | 실행 결과 로그 (자동 생성) |
+
+---
+
+### 1단계 — 작업 스케줄러 등록
+
+**PowerShell을 관리자 권한으로 열고** 아래 명령 실행:
+
+```powershell
+cd C:\Users\df2354fh\newgoods-ai-report
+powershell -ExecutionPolicy Bypass -File setup-task.ps1
+```
+
+성공 시 출력:
+```
+[SUCCESS] 작업 스케줄러 등록 완료!
+  작업 이름  : AttrangsNewGoodsAnalysis
+  실행 시각  : 매일 오전 09:00
+  실행 파일  : ...\run-daily.bat
+  로그 위치  : ...\logs\daily.log
+```
+
+---
+
+### 2단계 — 즉시 테스트 실행
+
+```powershell
+Start-ScheduledTask -TaskName "AttrangsNewGoodsAnalysis"
+```
+
+실행 결과 확인:
+```powershell
+Get-Content "C:\Users\df2354fh\newgoods-ai-report\logs\daily.log" -Tail 20
+```
+
+---
+
+### 자동 실행 흐름
+
+```
+매일 오전 09:00
+    │
+    ├─ run-daily.bat 실행
+    │
+    ├─ npm run extract
+    │   └─ 자사몰 접속 → 데이터 추출 → data/newgoods-data.csv 갱신
+    │
+    ├─ npm run analyze
+    │   └─ CSV 읽기 → 히어로 점수 계산 → reports/newgoods-report.md 갱신
+    │
+    ├─ git add + commit + push
+    │   └─ 변경 사항 없으면 Push 자동 생략
+    │
+    └─ logs/daily.log 에 실행 결과 기록
+```
+
+---
+
+### 작업 관리 명령어
+
+```powershell
+# 등록된 작업 확인
+Get-ScheduledTask -TaskName "AttrangsNewGoodsAnalysis"
+
+# 지금 바로 실행
+Start-ScheduledTask -TaskName "AttrangsNewGoodsAnalysis"
+
+# 실행 시각 변경 (예: 오전 8시로 변경)
+# setup-task.ps1 에서 $RunAt = "08:00" 으로 수정 후 재실행
+
+# 작업 제거
+Unregister-ScheduledTask -TaskName "AttrangsNewGoodsAnalysis" -Confirm:$false
+```
+
+---
+
+### 로그 확인
+
+```powershell
+# 마지막 20줄 확인
+Get-Content logs\daily.log -Tail 20
+
+# 실시간 모니터링
+Get-Content logs\daily.log -Wait -Tail 10
+```
+
+정상 실행 시 로그 예시:
+```
+============================================================
+[2026-05-13 09:00:01] 신상품 분석 자동 실행 시작
+============================================================
+[OK] 데이터 추출 완료
+[OK] 분석 완료
+[OK] GitHub Push 완료
+[2026-05-13 09:01:23] 전체 완료
+============================================================
+```
+
+---
+
 ## 기술 스택
 
 - **Node.js** — 스크립트 실행 환경
