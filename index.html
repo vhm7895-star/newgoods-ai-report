@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>아뜨랑스 신상품 반응 분석 대시보드</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- ── 헤더 ── -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-left">
+        <span class="brand">ATTRANGS</span>
+        <span class="divider">|</span>
+        <span class="page-title">신상품 반응 분석 대시보드</span>
+      </div>
+      <div class="header-right">
+        <span id="analysis-date" class="meta-badge"></span>
+        <span id="product-count" class="meta-badge"></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- ── KPI 요약 ── -->
+    <section class="section">
+      <div class="kpi-grid" id="kpi-grid"></div>
+    </section>
+
+    <!-- ── HERO 상품 ── -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">⭐ HERO 상품</h2>
+        <span class="section-badge hero-badge" id="hero-count"></span>
+      </div>
+      <div class="hero-grid" id="hero-grid"></div>
+    </section>
+
+    <!-- ── 성장 가능 상품 ── -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">🔼 성장 가능 상품</h2>
+        <span class="section-badge growth-badge" id="growth-count"></span>
+      </div>
+      <div class="growth-grid" id="growth-grid"></div>
+    </section>
+
+    <!-- ── 차트 ── -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">📊 히어로 점수 & 전환율 분석</h2>
+      </div>
+      <div class="charts-grid">
+        <div class="chart-card">
+          <h3 class="chart-title">히어로 점수 TOP 20</h3>
+          <div class="chart-wrap">
+            <canvas id="scoreChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <h3 class="chart-title">구매 비율 TOP 15</h3>
+          <div class="chart-wrap">
+            <canvas id="purchaseChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <h3 class="chart-title">장바구니 비율 TOP 15</h3>
+          <div class="chart-wrap">
+            <canvas id="cartChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <h3 class="chart-title">조회수 vs 판매금액 분포</h3>
+          <div class="chart-wrap">
+            <canvas id="bubbleChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 광고 확대 추천 ── -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">📢 광고 확대 추천 상품</h2>
+        <p class="section-desc">구매 전환율 우수 · 노출 부족 — 광고 즉시 집행 시 폭발적 성장 가능</p>
+      </div>
+      <div class="action-grid" id="ad-grid"></div>
+    </section>
+
+    <!-- ── 푸시 발송 대상 ── -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">🔔 푸시 발송 긴급 대상</h2>
+        <p class="section-desc">장바구니 이탈자 다수 — 즉각 푸시 발송으로 매출 회수 가능</p>
+      </div>
+      <div class="action-grid" id="push-grid"></div>
+    </section>
+
+    <!-- ── 개선 필요 상품 ── -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">🔽 개선 필요 상품</h2>
+        <span class="section-badge danger-badge" id="danger-count"></span>
+      </div>
+      <div class="improve-grid" id="improve-grid"></div>
+    </section>
+
+    <!-- ── 전체 상품 테이블 ── -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">📋 전체 상품 목록</h2>
+        <div class="table-controls">
+          <input type="text" id="table-search" class="search-input" placeholder="상품코드 검색..." />
+          <select id="tier-filter" class="filter-select">
+            <option value="">전체 등급</option>
+            <option value="HERO">⭐ HERO</option>
+            <option value="성장 가능">🔼 성장 가능</option>
+            <option value="관찰 필요">➡️ 관찰 필요</option>
+            <option value="개선 필요">🔽 개선 필요</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="product-table" id="product-table">
+          <thead>
+            <tr>
+              <th class="sortable" data-col="rank">#</th>
+              <th class="sortable" data-col="name">상품</th>
+              <th class="sortable" data-col="hero_score">히어로 점수</th>
+              <th>등급</th>
+              <th class="sortable" data-col="views">조회수</th>
+              <th class="sortable" data-col="purchase_rate">구매 비율</th>
+              <th class="sortable" data-col="cart_rate">장바구니 비율</th>
+              <th class="sortable" data-col="sales">판매금액</th>
+              <th class="sortable" data-col="dwell">체류시간</th>
+              <th>우선순위</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>아뜨랑스 MD AI 분석 시스템 v2.0 &nbsp;|&nbsp; Hero Score System</p>
+  </footer>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>
