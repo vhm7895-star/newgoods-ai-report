@@ -167,7 +167,7 @@ const kpis = [
   { label: '총 판매금액',    value: fmtW(totalSales) + '원', sub: `${products.length}개 상품 합산` },
   { label: '⭐ HERO 상품',    value: heroList.length + '개',   sub: `점수 80점 이상`, color: '#f59e0b' },
   { label: '🔴 긴급 처리',    value: urgentList.length + '개', sub: '즉시 액션 필요', color: '#ef4444' },
-  { label: '장바구니 이탈',   value: fmt(totalAbandoned) + '명', sub: '푸시 발송 잠재 대상' },
+  { label: '장바구니 담은 고객', value: fmt(totalAbandoned) + '명', sub: '구매 미전환' },
 ];
 
 document.getElementById('kpi-grid').innerHTML = kpis.map(k => `
@@ -245,7 +245,7 @@ document.getElementById('growth-grid').innerHTML = growthList.map(p => {
         <span class="stat-chip">조회 ${fmt(p.views)}</span>
         <span class="stat-chip good">구매 ${p.purchase_rate}%</span>
         <span class="stat-chip">장바구니 ${p.cart_rate}%</span>
-        ${abandoned >= 30 ? `<span class="stat-chip warn">이탈 ${fmt(abandoned)}명</span>` : ''}
+        ${abandoned >= 30 ? `<span class="stat-chip warn">구매 미전환 ${fmt(abandoned)}명</span>` : ''}
         <span class="stat-chip">${fmtW(p.sales)}원</span>
       </div>
     </div>
@@ -420,13 +420,13 @@ document.getElementById('push-grid').innerHTML = pushList.map(p => {
   <div class="action-card push-card">
     <div class="action-name">${p.name}</div>
     <div class="action-stats">
-      <div class="action-stat-row"><span class="action-stat-label">장바구니 이탈</span><span class="action-stat-val orange">${fmt(abandoned)}명</span></div>
+      <div class="action-stat-row"><span class="action-stat-label">구매 미전환</span><span class="action-stat-val orange">${fmt(abandoned)}명</span></div>
       <div class="action-stat-row"><span class="action-stat-label">구매 비율</span><span class="action-stat-val">${p.purchase_rate}%</span></div>
       <div class="action-stat-row"><span class="action-stat-label">장바구니 비율</span><span class="action-stat-val">${p.cart_rate}%</span></div>
       <div class="action-stat-row"><span class="action-stat-label">히어로 점수</span><span class="action-stat-val">${p.hero_score}점</span></div>
     </div>
     <div class="action-expected">
-      📩 이탈 ${fmt(abandoned)}명 중 20% 전환 시 추가 <strong>${expected}</strong> 즉각 회수 가능
+      📩 구매 미전환 ${fmt(abandoned)}명 중 20% 전환 시 추가 <strong>${expected}</strong> 즉각 회수 가능
     </div>
   </div>`;
 }).join('');
