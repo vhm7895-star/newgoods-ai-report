@@ -162,12 +162,13 @@ const totalSales = products.reduce((s, p) => s + p.sales, 0);
 const heroList   = products.filter(p => p.tier === 'HERO');
 const urgentList = products.filter(p => p.priority === '긴급');
 const totalAbandoned = products.reduce((s, p) => s + Math.max(0, p.cart_count - p.purchase_count), 0);
+const totalCart = products.reduce((s, p) => s + p.cart_count, 0);
 
 const kpis = [
   { label: '총 판매금액',    value: fmtW(totalSales) + '원', sub: `${products.length}개 상품 합산` },
   { label: '⭐ HERO 상품',    value: heroList.length + '개',   sub: `점수 80점 이상`, color: '#f59e0b' },
   { label: '🔴 긴급 처리',    value: urgentList.length + '개', sub: '즉시 액션 필요', color: '#ef4444' },
-  { label: '장바구니 담은 고객', value: fmt(totalAbandoned) + '명', sub: '구매 미전환' },
+  { label: '장바구니 담은 고객', value: fmt(totalCart) + '명', sub: '구매 미전환' },
 ];
 
 document.getElementById('kpi-grid').innerHTML = kpis.map(k => `
