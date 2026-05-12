@@ -130,7 +130,7 @@ function buildGauge(score, size = 80) {
       </svg>
       <div class="score-label">
         <span class="score-num" style="color:${color}">${score}</span>
-        <span class="score-unit">/ 100</span>
+        <span class="score-unit">점 / 100</span>
       </div>
     </div>`;
 }
@@ -204,7 +204,7 @@ document.getElementById('hero-grid').innerHTML = heroList.map(p => `
           <div class="breakdown-bar-wrap">
             <div class="breakdown-bar" style="width:${(p[b.key]/b.max*100).toFixed(0)}%;background:${b.color}"></div>
           </div>
-          <div class="breakdown-score">${p[b.key]}pt</div>
+          <div class="breakdown-score">${p[b.key]}점</div>
         </div>`).join('')}
     </div>
   </div>`).join('');
@@ -219,7 +219,7 @@ document.getElementById('growth-grid').innerHTML = growthList.map(p => {
   <div class="growth-card">
     <div class="growth-score-ring">
       <div class="ring-num">${p.hero_score}</div>
-      <div class="ring-label">pts</div>
+      <div class="ring-label">점 / 100</div>
     </div>
     <div class="growth-info">
       <div class="growth-name">${p.name}</div>
@@ -376,7 +376,7 @@ document.getElementById('ad-grid').innerHTML = adList.map(p => {
   <div class="action-card ad-card">
     <div class="action-name">${p.name}</div>
     <div class="action-stats">
-      <div class="action-stat-row"><span class="action-stat-label">히어로 점수</span><span class="action-stat-val blue">${p.hero_score}pt</span></div>
+      <div class="action-stat-row"><span class="action-stat-label">히어로 점수</span><span class="action-stat-val blue">${p.hero_score}점</span></div>
       <div class="action-stat-row"><span class="action-stat-label">현재 조회수</span><span class="action-stat-val">${fmt(p.views)}회</span></div>
       <div class="action-stat-row"><span class="action-stat-label">구매 비율</span><span class="action-stat-val green">${p.purchase_rate}%</span></div>
       <div class="action-stat-row"><span class="action-stat-label">판매금액</span><span class="action-stat-val">${fmtW(p.sales)}원</span></div>
@@ -405,7 +405,7 @@ document.getElementById('push-grid').innerHTML = pushList.map(p => {
       <div class="action-stat-row"><span class="action-stat-label">장바구니 이탈</span><span class="action-stat-val orange">${fmt(abandoned)}명</span></div>
       <div class="action-stat-row"><span class="action-stat-label">구매 비율</span><span class="action-stat-val">${p.purchase_rate}%</span></div>
       <div class="action-stat-row"><span class="action-stat-label">장바구니 비율</span><span class="action-stat-val">${p.cart_rate}%</span></div>
-      <div class="action-stat-row"><span class="action-stat-label">히어로 점수</span><span class="action-stat-val">${p.hero_score}pt</span></div>
+      <div class="action-stat-row"><span class="action-stat-label">히어로 점수</span><span class="action-stat-val">${p.hero_score}점</span></div>
     </div>
     <div class="action-expected">
       📩 이탈 ${fmt(abandoned)}명 중 20% 전환 시 추가 <strong>${expected}</strong> 즉각 회수 가능
