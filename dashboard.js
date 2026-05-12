@@ -211,7 +211,7 @@ document.getElementById('hero-grid').innerHTML = heroList.map(p => `
         <div class="metric-value">${fmtW(p.sales)}원</div>
       </div>
       <div class="metric">
-        <div class="metric-label">장바구니 이탈</div>
+        <div class="metric-label">구매 미전환</div>
         <div class="metric-value">${fmt(p.cart_count - p.purchase_count)}명</div>
       </div>
     </div>
