@@ -432,6 +432,107 @@ document.getElementById('push-grid').innerHTML = pushList.map(p => {
   </div>`;
 }).join('');
 
+// ─── 상세페이지 수정 필요 ────────────────────────────────────────────
+const detailList = products
+  .filter(p => p.dwell >= 42 && p.purchase_rate < 2 && p.views >= 100)
+  .sort((a, b) => b.dwell - a.dwell)
+  .slice(0, 8);
+
+document.getElementById('detail-grid').innerHTML = detailList.length === 0
+  ? '<p class="empty-msg">해당 상품 없음</p>'
+  : detailList.map(p => `
+  <div class="action-card detail-card">
+    <div class="action-name">${p.name}</div>
+    <div class="action-stats">
+      <div class="action-stat-row"><span class="action-stat-label">평균 체류시간</span><span class="action-stat-val orange">${p.dwell}초</span></div>
+      <div class="action-stat-row"><span class="action-stat-label">구매 비율</span><span class="action-stat-val">${p.purchase_rate}%</span></div>
+      <div class="action-stat-row"><span class="action-stat-label">장바구니 비율</span><span class="action-stat-val">${p.cart_rate}%</span></div>
+      <div class="action-stat-row"><span class="action-stat-label">히어로 점수</span><span class="action-stat-val">${p.hero_score}점</span></div>
+    </div>
+    <div class="action-expected">
+      📄 체류 ${p.dwell}초 열람 중이나 구매 전환 ${p.purchase_rate}% — 착용 영상·사이즈 실측·구매 포인트 상단 배치 권장
+    </div>
+  </div>`).join('');
+
+// ─── 가격 점검 필요 ──────────────────────────────────────────────────
+const priceList = products
+  .filter(p => {
+    const ratio = p.cart_count > 0 ? p.purchase_count / p.cart_count : 0;
+    return (p.cart_count >= 20 && ratio < 0.15) || (p.cart_count >= 5 && p.purchase_count === 0 && p.cart_rate >= 5);
+  })
+  .sort((a, b) => b.cart_count - a.cart_count)
+  .slice(0, 8);
+
+document.getElementById('price-grid').innerHTML = priceList.length === 0
+  ? '<p class="empty-msg">해당 상품 없음</p>'
+  : priceList.map(p => {
+    const ratio = p.cart_count > 0 ? Math.round(p.purchase_count / p.cart_count * 100) : 0;
+    return `
+  <div class="action-card price-card">
+    <div class="action-name">${p.name}</div>
+    <div class="action-stats">
+      <div class="action-stat-row"><span class="action-stat-label">장바구니 수</span><span class="action-stat-val orange">${fmt(p.cart_count)}개</span></div>
+      <div class="action-stat-row"><span class="action-stat-label">구매 수</span><span class="action-stat-val">${fmt(p.purchase_count)}건</span></div>
+      <div class="action-stat-row"><span class="action-stat-label">장바구니→구매</span><span class="action-stat-val red">${ratio}%</span></div>
+      <div class="action-stat-row"><span class="action-stat-label">히어로 점수</span><span class="action-stat-val">${p.hero_score}점</span></div>
+    </div>
+    <div class="action-expected">
+      💰 장바구니 후 결제 전환 ${ratio}% — 가격·배송비·경쟁가 재검토 권장
+    </div>
+  </div>`;
+  }).join('');
+
+// ─── 재고 긴급 알림 ──────────────────────────────────────────────────
+const stockAlertList = products
+  .filter(p => (p.stock === 0 && p.sales > 0) || (p.stock > 0 && p.stock <= 5 && p.sales >= 200000))
+  .sort((a, b) => b.sales - a.sales);
+
+document.getElementById('stock-grid').innerHTML = stockAlertList.length === 0
+  ? '<p class="empty-msg">재고 위험 상품 없음</p>'
+  : stockAlertList.map(p => {
+    const alertMsg = p.stock === 0 ? '재고 0 ⚠️ 즉시 발주 필요' : `재고 ${p.stock}개 — 품절 임박`;
+    return `
+  <div class="action-card stock-alert-card">
+    <div class="action-name">${p.name}</div>
+    <div class="action-stats">
+      <div class="action-stat-row"><span class="action-stat-label">재고</span><span class="action-stat-val red">${p.stock}개</span></div>
+      <div class="action-stat-row"><span class="action-stat-label">판매금액</span><span class="action-stat-val green">${fmtW(p.sales)}원</span></div>
+      <div class="action-stat-row"><span class="action-stat-label">구매 수</span><span class="action-stat-val">${fmt(p.purchase_count)}건</span></div>
+      <div class="action-stat-row"><span class="action-stat-label">히어로 점수</span><span class="action-stat-val">${p.hero_score}점</span></div>
+    </div>
+    <div class="action-expected">
+      📦 ${alertMsg}
+    </div>
+  </div>`;
+  }).join('');
+
+// ─── 썸네일 점검 필요 ────────────────────────────────────────────────
+const _today = new Date();
+const thumbList = products
+  .filter(p => {
+    const days = Math.floor((_today - new Date(p.reg_date)) / (1000 * 60 * 60 * 24));
+    return p.views < 100 && p.views >= 1 && days >= 14;
+  })
+  .map(p => ({ ...p, daysSince: Math.floor((_today - new Date(p.reg_date)) / (1000 * 60 * 60 * 24)) }))
+  .sort((a, b) => a.views - b.views)
+  .slice(0, 8);
+
+document.getElementById('thumb-grid').innerHTML = thumbList.length === 0
+  ? '<p class="empty-msg">해당 상품 없음</p>'
+  : thumbList.map(p => `
+  <div class="action-card thumb-card">
+    <div class="action-name">${p.name}</div>
+    <div class="action-stats">
+      <div class="action-stat-row"><span class="action-stat-label">조회수</span><span class="action-stat-val red">${fmt(p.views)}회</span></div>
+      <div class="action-stat-row"><span class="action-stat-label">등록일</span><span class="action-stat-val">${p.reg_date}</span></div>
+      <div class="action-stat-row"><span class="action-stat-label">등록 경과</span><span class="action-stat-val orange">${p.daysSince}일</span></div>
+      <div class="action-stat-row"><span class="action-stat-label">구매 비율</span><span class="action-stat-val">${p.purchase_rate}%</span></div>
+    </div>
+    <div class="action-expected">
+      🖼️ ${p.daysSince}일 경과 후 조회수 ${p.views}회 — 썸네일 교체 A/B 테스트 권장
+    </div>
+  </div>`).join('');
+
 // ─── 개선 필요 상품 ──────────────────────────────────────────────────
 const dangerList = products.filter(p => p.tier === '개선 필요');
 document.getElementById('danger-count').textContent = dangerList.length + '개';

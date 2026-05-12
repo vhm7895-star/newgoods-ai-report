@@ -480,6 +480,7 @@ body {
 .action-stat-val.blue   { color: var(--growth-color); }
 .action-stat-val.orange { color: var(--urgent-color); }
 .action-stat-val.green  { color: var(--success-color); }
+.action-stat-val.red    { color: #f87171; }
 
 .action-expected {
   margin-top: 10px;

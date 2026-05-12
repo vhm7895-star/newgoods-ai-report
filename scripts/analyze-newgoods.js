@@ -134,6 +134,13 @@ function getActions(p) {
     acts.push('[ACT-10] **코디 상품 연결** — 체류시간 높아 추가 탐색 의향 존재. 하단 코디 상품 배치로 교차 구매 유도');
   if (pr >= 3 && v < 500)
     acts.push('[ACT-11] **외부몰 확장** — 높은 전환율 상품의 노출 채널 다각화. 카카오스타일·에이블리 추가 입점 검토');
+
+  // ACT-12: 썸네일 점검 — 등록 14일 이상, 조회수 100 미만
+  const regDate = p.reg_date ? new Date(p.reg_date) : null;
+  const daysSince = regDate ? Math.floor((new Date() - regDate) / 86400000) : 0;
+  if (v < 100 && v >= 1 && daysSince >= 14)
+    acts.push('[ACT-12] **썸네일 점검** — 등록 후 14일 경과, 조회수 100 미만. 클릭률 저조 가능성 — 썸네일 교체 검토');
+
   if (acts.length === 0)
     acts.push('[ACT-09] **긴급 소진 유도** — 저반응 상품. 할인 또는 번들 구성으로 재고 정리 검토');
 
