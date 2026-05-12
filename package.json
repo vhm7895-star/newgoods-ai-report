@@ -1,0 +1,17 @@
+{
+  "name": "newgoods-ai-report",
+  "version": "2.0.0",
+  "description": "아뜨랑스 자사몰 신상품 반응 분석 AI 리포트",
+  "scripts": {
+    "extract": "node scripts/extract-newgoods.js",
+    "analyze": "node scripts/analyze-newgoods.js",
+    "run": "node scripts/extract-newgoods.js && node scripts/analyze-newgoods.js",
+    "extract:visible": "cross-env HEADLESS=false node scripts/extract-newgoods.js",
+    "run:visible": "cross-env HEADLESS=false node scripts/extract-newgoods.js && node scripts/analyze-newgoods.js"
+  },
+  "dependencies": {
+    "playwright": "^1.44.0",
+    "dotenv": "^16.4.5",
+    "cross-env": "^7.0.3"
+  }
+}
