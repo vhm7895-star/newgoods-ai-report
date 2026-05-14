@@ -414,12 +414,16 @@ ${rawEntries}
 ];
 `;
 
-  // dashboard.js에서 RAW 배열 부분만 교체
+  // dashboard.js에서 RAW 배열 부분만 교체 (indexOf 방식으로 안정적으로 교체)
   let dashSrc = fs.readFileSync(DASHBOARD_PATH, 'utf-8');
-  dashSrc = dashSrc.replace(
-    /\/\/ ─── 원본 데이터.*?const RAW = \[[\s\S]*?\];/,
-    dashboardContent.trim()
-  );
+  const rawStart = dashSrc.indexOf('const RAW = [');
+  const rawEnd   = dashSrc.indexOf('];', rawStart) + 2;
+  if (rawStart !== -1 && rawEnd > rawStart) {
+    // 헤더 주석 라인도 포함해 교체 (RAW 시작 직전 줄까지)
+    const beforeRaw = dashSrc.lastIndexOf('\n', rawStart - 1);
+    const headerStart = dashSrc.lastIndexOf('\n', beforeRaw - 1) + 1;
+    dashSrc = dashSrc.slice(0, headerStart) + dashboardContent + dashSrc.slice(rawEnd);
+  }
   fs.writeFileSync(DASHBOARD_PATH, dashSrc, 'utf-8');
   console.log(` dashboard.js 업데이트 완료: ${products.length}개 상품`);
 }
