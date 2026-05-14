@@ -19,6 +19,7 @@ const LOGIN_PW    = process.env.SNFG_PW || '';
 const HEADLESS    = process.env.HEADLESS !== 'false';
 const COOKIE_FILE = path.join(__dirname, '..', '.session-cookies.json');
 const OUT_CSV     = path.join(__dirname, '..', 'data', 'newgoods-data.csv');
+const OUT_META    = path.join(__dirname, '..', 'data', 'meta.json');
 const DEBUG_SHOT  = path.join(__dirname, '..', 'debug-screenshot.png');
 
 const CSV_HEADER = '상품등록일,상품명,조회수,장바구니 수,구매 수,장바구니 비율,구매 비율,총 비율,판매금액,평균 체류시간(초),재고';
@@ -321,6 +322,27 @@ async function main() {
 
     log(`헤더: ${data.headers.join(' | ')}`);
     log(`추출된 행: ${data.rows.length}개`);
+
+    // 사이트 조회기간 캡처 (sdate/edate input 값 직접 읽기)
+    const today = new Date();
+    const todayStr = `${today.getFullYear()}.${today.getMonth()+1}.${today.getDate()}`;
+    const periodInfo = await page.evaluate(() => {
+      const sdate = document.querySelector('input[name="sdate"]')?.value || '';
+      const edate = document.querySelector('input[name="edate"]')?.value || '';
+      const fmt = s => {
+        const [y, m, d] = s.split('-');
+        return y && m && d ? `${y}.${parseInt(m)}.${parseInt(d)}` : null;
+      };
+      return { start: fmt(sdate), end: fmt(edate) };
+    });
+    const meta = {
+      extractedAt: todayStr,
+      periodStart: periodInfo?.start || null,
+      periodEnd: todayStr,
+    };
+    fs.mkdirSync(path.dirname(OUT_META), { recursive: true });
+    fs.writeFileSync(OUT_META, JSON.stringify(meta, null, 2), 'utf-8');
+    log(`조회기간 캡처: ${meta.periodStart ? meta.periodStart + ' ~ ' + meta.periodEnd : '시작일 미확인, ' + meta.periodEnd + ' 기준'}`);
 
     // CSV 저장
     const csv = buildCsv(data);

@@ -9,6 +9,7 @@ const fs   = require('fs');
 const path = require('path');
 
 const CSV_PATH      = path.join(__dirname, '..', 'data', 'newgoods-data.csv');
+const META_PATH     = path.join(__dirname, '..', 'data', 'meta.json');
 const REPORT_PATH   = path.join(__dirname, '..', 'reports', 'newgoods-report.md');
 const DASHBOARD_PATH = path.join(__dirname, '..', 'dashboard.js');
 
@@ -424,17 +425,25 @@ ${rawEntries}
     const headerStart = dashSrc.lastIndexOf('\n', beforeRaw - 1) + 1;
     dashSrc = dashSrc.slice(0, headerStart) + dashboardContent + dashSrc.slice(rawEnd);
   }
-  // 조회기간 날짜도 오늘 기준으로 교체
+  // 조회기간 날짜 표기 (meta.json의 시작일 ~ 오늘)
   const now = new Date();
   const yy = now.getFullYear();
   const mm = now.getMonth() + 1;
   const dd = now.getDate();
+  const todayFmt = `${yy}.${mm}.${dd}`;
+  let periodLabel = `${todayFmt} 기준`;
+  try {
+    const meta = JSON.parse(fs.readFileSync(META_PATH, 'utf-8'));
+    if (meta.periodStart) {
+      periodLabel = `${meta.periodStart} ~ ${todayFmt}`;
+    }
+  } catch (_) {}
   dashSrc = dashSrc.replace(
     /document\.getElementById\('analysis-date'\)\.textContent\s*=\s*'조회기간:[^']*';/,
-    `document.getElementById('analysis-date').textContent = '조회기간: ${yy}.${mm}.${dd} 기준';`
+    `document.getElementById('analysis-date').textContent = '조회기간: ${periodLabel}';`
   );
   fs.writeFileSync(DASHBOARD_PATH, dashSrc, 'utf-8');
-  console.log(` dashboard.js 업데이트 완료: ${products.length}개 상품 (${yy}.${mm}.${dd} 기준)`);
+  console.log(` dashboard.js 업데이트 완료: ${products.length}개 상품 (${periodLabel})`);
 }
 
 main();
