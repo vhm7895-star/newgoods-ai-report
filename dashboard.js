@@ -82,6 +82,7 @@ const RAW = [
 ];
 
 
+
 // ─── 채점 함수 ───────────────────────────────────────────────────────
 const scoreP = r => r>=5?30: r>=3?24: r>=2?18: r>=1?12: r>=0.5?6: 0;
 const scoreC = r => r>=20?20: r>=15?16: r>=10?12: r>=5?8: r>=2?4: 0;
@@ -178,7 +179,7 @@ function buildGauge(score, size = 80) {
 }
 
 // ─── 헤더 메타 ──────────────────────────────────────────────────────
-document.getElementById('analysis-date').textContent = '조회기간: 2026.5.10 ~ 5.13';
+document.getElementById('analysis-date').textContent = '조회기간: 2026.5.14 기준';
 document.getElementById('product-count').textContent = `총 ${products.length}개 상품`;
 
 // ─── KPI ─────────────────────────────────────────────────────────────

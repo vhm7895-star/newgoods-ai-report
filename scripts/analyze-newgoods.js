@@ -424,8 +424,17 @@ ${rawEntries}
     const headerStart = dashSrc.lastIndexOf('\n', beforeRaw - 1) + 1;
     dashSrc = dashSrc.slice(0, headerStart) + dashboardContent + dashSrc.slice(rawEnd);
   }
+  // 조회기간 날짜도 오늘 기준으로 교체
+  const now = new Date();
+  const yy = now.getFullYear();
+  const mm = now.getMonth() + 1;
+  const dd = now.getDate();
+  dashSrc = dashSrc.replace(
+    /document\.getElementById\('analysis-date'\)\.textContent\s*=\s*'조회기간:[^']*';/,
+    `document.getElementById('analysis-date').textContent = '조회기간: ${yy}.${mm}.${dd} 기준';`
+  );
   fs.writeFileSync(DASHBOARD_PATH, dashSrc, 'utf-8');
-  console.log(` dashboard.js 업데이트 완료: ${products.length}개 상품`);
+  console.log(` dashboard.js 업데이트 완료: ${products.length}개 상품 (${yy}.${mm}.${dd} 기준)`);
 }
 
 main();
