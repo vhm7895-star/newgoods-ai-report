@@ -8,8 +8,9 @@
 const fs   = require('fs');
 const path = require('path');
 
-const CSV_PATH    = path.join(__dirname, '..', 'data', 'newgoods-data.csv');
-const REPORT_PATH = path.join(__dirname, '..', 'reports', 'newgoods-report.md');
+const CSV_PATH      = path.join(__dirname, '..', 'data', 'newgoods-data.csv');
+const REPORT_PATH   = path.join(__dirname, '..', 'reports', 'newgoods-report.md');
+const DASHBOARD_PATH = path.join(__dirname, '..', 'dashboard.js');
 
 // ─── CSV 파싱 ─────────────────────────────────────────────────────
 function parseCSV(text) {
@@ -396,6 +397,31 @@ function main() {
   });
   console.log('='.repeat(55));
   console.log(` 리포트 저장 완료: reports/newgoods-report.md`);
+
+  // dashboard.js 자동 생성
+  const todayLabel = new Date().toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' });
+  const rawEntries = products.map(p => {
+    const pad = (v, w=4) => String(v).padStart(w);
+    return `  { reg_date:'${p.reg_date}', name:'${p.name}',` +
+      ` views:${pad(p.views)},  cart_count:${pad(p.cart_count)},  purchase_count:${pad(p.purchase_count)},` +
+      `  cart_rate:${String(p.cart_rate).padStart(5)},  purchase_rate:${String(p.purchase_rate).padStart(4)},` +
+      ` total_rate:${String(p.total_rate).padStart(5)},  sales:${pad(p.sales, 8)},   dwell:${pad(p.dwell, 2)}, stock:${pad(p.stock, 3)}  }`;
+  }).join(',\n');
+
+  const dashboardContent = `// ─── 원본 데이터 (판매중 + 진열 필터 적용, ${todayLabel} 기준) ──────────
+const RAW = [
+${rawEntries}
+];
+`;
+
+  // dashboard.js에서 RAW 배열 부분만 교체
+  let dashSrc = fs.readFileSync(DASHBOARD_PATH, 'utf-8');
+  dashSrc = dashSrc.replace(
+    /\/\/ ─── 원본 데이터.*?const RAW = \[[\s\S]*?\];/,
+    dashboardContent.trim()
+  );
+  fs.writeFileSync(DASHBOARD_PATH, dashSrc, 'utf-8');
+  console.log(` dashboard.js 업데이트 완료: ${products.length}개 상품`);
 }
 
 main();
