@@ -693,6 +693,47 @@ body {
   border-top: 1px solid var(--border);
 }
 
+/* ── Thumbnails ── */
+.thumb-img {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+}
+
+.hero-thumb {
+  width: 60px;
+  height: 60px;
+}
+
+.table-thumb {
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+}
+
+.prod-name-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.action-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.action-header .action-name,
+.action-header .improve-name,
+.action-header .growth-name {
+  margin-bottom: 0;
+}
+
 /* ── Responsive ── */
 @media (max-width: 1200px) {
   .hero-grid    { grid-template-columns: repeat(2, 1fr); }

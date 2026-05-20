@@ -208,9 +208,12 @@ const breakdownDef = [
 document.getElementById('hero-grid').innerHTML = heroList.map(p => `
   <div class="hero-card">
     <div class="hero-card-top">
-      <div>
-        <div class="hero-name">${p.name} ${stockBadge(p.stock, p.sales)}</div>
-        <div class="hero-regdate">등록일 ${p.reg_date}</div>
+      <div class="prod-name-wrap">
+        <img src="https://picsum.photos/seed/${p.name}/150/150" alt="${p.name}" class="thumb-img hero-thumb" loading="lazy" />
+        <div>
+          <div class="hero-name">${p.name} ${stockBadge(p.stock, p.sales)}</div>
+          <div class="hero-regdate">등록일 ${p.reg_date}</div>
+        </div>
       </div>
       ${buildGauge(p.hero_score, 80)}
     </div>
@@ -257,7 +260,10 @@ document.getElementById('growth-grid').innerHTML = growthList.map(p => {
       <div class="ring-label">점 / 100</div>
     </div>
     <div class="growth-info">
-      <div class="growth-name">${p.name}</div>
+      <div class="action-header">
+        <img src="https://picsum.photos/seed/${p.name}/100/100" alt="${p.name}" class="thumb-img" loading="lazy" />
+        <div class="growth-name">${p.name}</div>
+      </div>
       <div class="growth-stats">
         <span class="stat-chip">조회 ${fmt(p.views)}</span>
         <span class="stat-chip good">구매 ${p.purchase_rate}%</span>
@@ -409,7 +415,10 @@ document.getElementById('ad-grid').innerHTML = adList.map(p => {
   const mult = (1000 / Math.max(p.views, 1)).toFixed(1);
   return `
   <div class="action-card ad-card">
-    <div class="action-name">${p.name}</div>
+    <div class="action-header">
+      <img src="https://picsum.photos/seed/${p.name}/100/100" alt="${p.name}" class="thumb-img" loading="lazy" />
+      <div class="action-name">${p.name}</div>
+    </div>
     <div class="action-stats">
       <div class="action-stat-row"><span class="action-stat-label">히어로 점수</span><span class="action-stat-val blue">${p.hero_score}점</span></div>
       <div class="action-stat-row"><span class="action-stat-label">현재 조회수</span><span class="action-stat-val">${fmt(p.views)}회</span></div>
@@ -435,7 +444,10 @@ document.getElementById('push-grid').innerHTML = pushList.map(p => {
   const expected = avgPrice > 0 ? fmtW(recover * avgPrice) + '원' : `${recover}건`;
   return `
   <div class="action-card push-card">
-    <div class="action-name">${p.name}</div>
+    <div class="action-header">
+      <img src="https://picsum.photos/seed/${p.name}/100/100" alt="${p.name}" class="thumb-img" loading="lazy" />
+      <div class="action-name">${p.name}</div>
+    </div>
     <div class="action-stats">
       <div class="action-stat-row"><span class="action-stat-label">구매 미전환</span><span class="action-stat-val orange">${fmt(abandoned)}명</span></div>
       <div class="action-stat-row"><span class="action-stat-label">구매 비율</span><span class="action-stat-val">${p.purchase_rate}%</span></div>
@@ -458,7 +470,10 @@ document.getElementById('detail-grid').innerHTML = detailList.length === 0
   ? '<p class="empty-msg">해당 상품 없음</p>'
   : detailList.map(p => `
   <div class="action-card detail-card">
-    <div class="action-name">${p.name}</div>
+    <div class="action-header">
+      <img src="https://picsum.photos/seed/${p.name}/100/100" alt="${p.name}" class="thumb-img" loading="lazy" />
+      <div class="action-name">${p.name}</div>
+    </div>
     <div class="action-stats">
       <div class="action-stat-row"><span class="action-stat-label">평균 체류시간</span><span class="action-stat-val orange">${p.dwell}초</span></div>
       <div class="action-stat-row"><span class="action-stat-label">구매 비율</span><span class="action-stat-val">${p.purchase_rate}%</span></div>
@@ -485,7 +500,10 @@ document.getElementById('price-grid').innerHTML = priceList.length === 0
     const ratio = p.cart_count > 0 ? Math.round(p.purchase_count / p.cart_count * 100) : 0;
     return `
   <div class="action-card price-card">
-    <div class="action-name">${p.name}</div>
+    <div class="action-header">
+      <img src="https://picsum.photos/seed/${p.name}/100/100" alt="${p.name}" class="thumb-img" loading="lazy" />
+      <div class="action-name">${p.name}</div>
+    </div>
     <div class="action-stats">
       <div class="action-stat-row"><span class="action-stat-label">장바구니 수</span><span class="action-stat-val orange">${fmt(p.cart_count)}개</span></div>
       <div class="action-stat-row"><span class="action-stat-label">구매 수</span><span class="action-stat-val">${fmt(p.purchase_count)}건</span></div>
@@ -509,7 +527,10 @@ document.getElementById('stock-grid').innerHTML = stockAlertList.length === 0
     const alertMsg = p.stock === 0 ? '재고 0 ⚠️ 즉시 발주 필요' : `재고 ${p.stock}개 — 품절 임박`;
     return `
   <div class="action-card stock-alert-card">
-    <div class="action-name">${p.name}</div>
+    <div class="action-header">
+      <img src="https://picsum.photos/seed/${p.name}/100/100" alt="${p.name}" class="thumb-img" loading="lazy" />
+      <div class="action-name">${p.name}</div>
+    </div>
     <div class="action-stats">
       <div class="action-stat-row"><span class="action-stat-label">재고</span><span class="action-stat-val red">${p.stock}개</span></div>
       <div class="action-stat-row"><span class="action-stat-label">판매금액</span><span class="action-stat-val green">${fmtW(p.sales)}원</span></div>
@@ -537,7 +558,10 @@ document.getElementById('thumb-grid').innerHTML = thumbList.length === 0
   ? '<p class="empty-msg">해당 상품 없음</p>'
   : thumbList.map(p => `
   <div class="action-card thumb-card">
-    <div class="action-name">${p.name}</div>
+    <div class="action-header">
+      <img src="https://picsum.photos/seed/${p.name}/100/100" alt="${p.name}" class="thumb-img" loading="lazy" />
+      <div class="action-name">${p.name}</div>
+    </div>
     <div class="action-stats">
       <div class="action-stat-row"><span class="action-stat-label">조회수</span><span class="action-stat-val red">${fmt(p.views)}회</span></div>
       <div class="action-stat-row"><span class="action-stat-label">등록일</span><span class="action-stat-val">${p.reg_date}</span></div>
@@ -561,7 +585,10 @@ document.getElementById('improve-grid').innerHTML = dangerList.map(p => {
   else issue = '전반 지표 저조';
   return `
   <div class="improve-card">
-    <div class="improve-name">${p.name}</div>
+    <div class="action-header">
+      <img src="https://picsum.photos/seed/${p.name}/100/100" alt="${p.name}" class="thumb-img" loading="lazy" />
+      <div class="improve-name">${p.name}</div>
+    </div>
     <div class="improve-score">${p.hero_score}<span>점</span></div>
     <div class="improve-issue">${issue}<br/>조회 ${fmt(p.views)} · 구매 ${p.purchase_rate}%</div>
   </div>`;
@@ -591,7 +618,12 @@ function renderTable() {
   document.getElementById('table-body').innerHTML = list.map((p, i) => `
     <tr>
       <td class="rank">${i + 1}</td>
-      <td class="prod-name">${p.name}<br/><span style="font-size:10px;color:#555">${p.reg_date}</span></td>
+      <td class="prod-name">
+        <div class="prod-name-wrap">
+          <img src="https://picsum.photos/seed/${p.name}/100/100" alt="${p.name}" class="thumb-img table-thumb" loading="lazy" />
+          <div>${p.name}<br/><span style="font-size:10px;color:#555">${p.reg_date}</span></div>
+        </div>
+      </td>
       <td>
         <div class="score-bar-wrap">
           <div class="score-bar-bg">
