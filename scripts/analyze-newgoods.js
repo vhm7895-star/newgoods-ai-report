@@ -206,6 +206,7 @@ function main() {
       sales:          Math.round(num(r[8])),
       dwell:          Math.round(num(r[9])),
       stock:          r[10] !== undefined ? Math.round(num(r[10])) : null,
+      thumb_url:      r[11] || '',
     };
     const sp = scorePurchaseRate(p.purchase_rate);
     const sc = scoreCartRate(p.cart_rate);
@@ -406,7 +407,7 @@ function main() {
     return `  { reg_date:'${p.reg_date}', name:'${p.name}',` +
       ` views:${pad(p.views)},  cart_count:${pad(p.cart_count)},  purchase_count:${pad(p.purchase_count)},` +
       `  cart_rate:${String(p.cart_rate).padStart(5)},  purchase_rate:${String(p.purchase_rate).padStart(4)},` +
-      ` total_rate:${String(p.total_rate).padStart(5)},  sales:${pad(p.sales, 8)},   dwell:${pad(p.dwell, 2)}, stock:${pad(p.stock, 3)}  }`;
+      ` total_rate:${String(p.total_rate).padStart(5)},  sales:${pad(p.sales, 8)},   dwell:${pad(p.dwell, 2)}, stock:${pad(p.stock, 3)}, thumb_url:'${p.thumb_url}'  }`;
   }).join(',\n');
 
   const dashboardContent = `// ─── 원본 데이터 (판매중 + 진열 필터 적용, ${todayLabel} 기준) ──────────

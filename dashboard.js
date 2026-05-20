@@ -209,7 +209,7 @@ document.getElementById('hero-grid').innerHTML = heroList.map(p => `
   <div class="hero-card">
     <div class="hero-card-top">
       <div class="prod-name-wrap">
-        <img src="https://picsum.photos/seed/${p.name}/150/150" alt="${p.name}" class="thumb-img hero-thumb" loading="lazy" />
+        <img src="${p.thumb_url || `https://picsum.photos/seed/${p.name}/150/150`}" alt="${p.name}" class="thumb-img hero-thumb" loading="lazy" />
         <div>
           <div class="hero-name">${p.name} ${stockBadge(p.stock, p.sales)}</div>
           <div class="hero-regdate">등록일 ${p.reg_date}</div>
@@ -261,7 +261,7 @@ document.getElementById('growth-grid').innerHTML = growthList.map(p => {
     </div>
     <div class="growth-info">
       <div class="action-header">
-        <img src="https://picsum.photos/seed/${p.name}/100/100" alt="${p.name}" class="thumb-img" loading="lazy" />
+        <img src="${p.thumb_url || `https://picsum.photos/seed/${p.name}/100/100`}" alt="${p.name}" class="thumb-img" loading="lazy" />
         <div class="growth-name">${p.name}</div>
       </div>
       <div class="growth-stats">
@@ -416,7 +416,7 @@ document.getElementById('ad-grid').innerHTML = adList.map(p => {
   return `
   <div class="action-card ad-card">
     <div class="action-header">
-      <img src="https://picsum.photos/seed/${p.name}/100/100" alt="${p.name}" class="thumb-img" loading="lazy" />
+      <img src="${p.thumb_url || `https://picsum.photos/seed/${p.name}/100/100`}" alt="${p.name}" class="thumb-img" loading="lazy" />
       <div class="action-name">${p.name}</div>
     </div>
     <div class="action-stats">
@@ -445,7 +445,7 @@ document.getElementById('push-grid').innerHTML = pushList.map(p => {
   return `
   <div class="action-card push-card">
     <div class="action-header">
-      <img src="https://picsum.photos/seed/${p.name}/100/100" alt="${p.name}" class="thumb-img" loading="lazy" />
+      <img src="${p.thumb_url || `https://picsum.photos/seed/${p.name}/100/100`}" alt="${p.name}" class="thumb-img" loading="lazy" />
       <div class="action-name">${p.name}</div>
     </div>
     <div class="action-stats">
@@ -471,7 +471,7 @@ document.getElementById('detail-grid').innerHTML = detailList.length === 0
   : detailList.map(p => `
   <div class="action-card detail-card">
     <div class="action-header">
-      <img src="https://picsum.photos/seed/${p.name}/100/100" alt="${p.name}" class="thumb-img" loading="lazy" />
+      <img src="${p.thumb_url || `https://picsum.photos/seed/${p.name}/100/100`}" alt="${p.name}" class="thumb-img" loading="lazy" />
       <div class="action-name">${p.name}</div>
     </div>
     <div class="action-stats">
@@ -501,7 +501,7 @@ document.getElementById('price-grid').innerHTML = priceList.length === 0
     return `
   <div class="action-card price-card">
     <div class="action-header">
-      <img src="https://picsum.photos/seed/${p.name}/100/100" alt="${p.name}" class="thumb-img" loading="lazy" />
+      <img src="${p.thumb_url || `https://picsum.photos/seed/${p.name}/100/100`}" alt="${p.name}" class="thumb-img" loading="lazy" />
       <div class="action-name">${p.name}</div>
     </div>
     <div class="action-stats">
@@ -528,7 +528,7 @@ document.getElementById('stock-grid').innerHTML = stockAlertList.length === 0
     return `
   <div class="action-card stock-alert-card">
     <div class="action-header">
-      <img src="https://picsum.photos/seed/${p.name}/100/100" alt="${p.name}" class="thumb-img" loading="lazy" />
+      <img src="${p.thumb_url || `https://picsum.photos/seed/${p.name}/100/100`}" alt="${p.name}" class="thumb-img" loading="lazy" />
       <div class="action-name">${p.name}</div>
     </div>
     <div class="action-stats">
@@ -559,7 +559,7 @@ document.getElementById('thumb-grid').innerHTML = thumbList.length === 0
   : thumbList.map(p => `
   <div class="action-card thumb-card">
     <div class="action-header">
-      <img src="https://picsum.photos/seed/${p.name}/100/100" alt="${p.name}" class="thumb-img" loading="lazy" />
+      <img src="${p.thumb_url || `https://picsum.photos/seed/${p.name}/100/100`}" alt="${p.name}" class="thumb-img" loading="lazy" />
       <div class="action-name">${p.name}</div>
     </div>
     <div class="action-stats">
@@ -586,7 +586,7 @@ document.getElementById('improve-grid').innerHTML = dangerList.map(p => {
   return `
   <div class="improve-card">
     <div class="action-header">
-      <img src="https://picsum.photos/seed/${p.name}/100/100" alt="${p.name}" class="thumb-img" loading="lazy" />
+      <img src="${p.thumb_url || `https://picsum.photos/seed/${p.name}/100/100`}" alt="${p.name}" class="thumb-img" loading="lazy" />
       <div class="improve-name">${p.name}</div>
     </div>
     <div class="improve-score">${p.hero_score}<span>점</span></div>
@@ -620,7 +620,7 @@ function renderTable() {
       <td class="rank">${i + 1}</td>
       <td class="prod-name">
         <div class="prod-name-wrap">
-          <img src="https://picsum.photos/seed/${p.name}/100/100" alt="${p.name}" class="thumb-img table-thumb" loading="lazy" />
+          <img src="${p.thumb_url || `https://picsum.photos/seed/${p.name}/100/100`}" alt="${p.name}" class="thumb-img table-thumb" loading="lazy" />
           <div>${p.name}<br/><span style="font-size:10px;color:#555">${p.reg_date}</span></div>
         </div>
       </td>

@@ -22,10 +22,11 @@ const OUT_CSV     = path.join(__dirname, '..', 'data', 'newgoods-data.csv');
 const OUT_META    = path.join(__dirname, '..', 'data', 'meta.json');
 const DEBUG_SHOT  = path.join(__dirname, '..', 'debug-screenshot.png');
 
-const CSV_HEADER = '상품등록일,상품명,조회수,장바구니 수,구매 수,장바구니 비율,구매 비율,총 비율,판매금액,평균 체류시간(초),재고';
+const CSV_HEADER = '상품등록일,상품명,조회수,장바구니 수,구매 수,장바구니 비율,구매 비율,총 비율,판매금액,평균 체류시간(초),재고,이미지URL';
 
 // 컬럼 헤더 텍스트 → 필드명 매핑 (부분 일치)
 const COL_PATTERNS = [
+  { patterns: ['이미지URL'],                    field: 'thumb_url' },
   { patterns: ['등록일', '등록 일'],           field: 'reg_date' },
   { patterns: ['상품명', '상품 명', '상품코드', '상품 코드', '코드'], field: 'name' },
   { patterns: ['조회수', '조회 수', '조회'],    field: 'views' },
@@ -203,14 +204,21 @@ async function extractTable(page) {
     if (!headerRow) headerRow = targetTable.querySelector('tr');
     const headers = Array.from(headerRow?.querySelectorAll('th, td') || [])
       .map(c => c.textContent.trim().replace(/\s+/g, ' '));
+    headers.push('이미지URL'); // 썸네일 컬럼 추가
 
     // 데이터 행 추출
     const bodyRows = targetTable.querySelectorAll('tbody tr') ||
                      Array.from(targetTable.querySelectorAll('tr')).slice(1);
 
     const rows = Array.from(bodyRows)
-      .map(tr => Array.from(tr.querySelectorAll('td')).map(td => td.textContent.trim().replace(/\s+/g, ' ')))
-      .filter(row => row.length > 0 && row.some(c => c !== ''));
+      .map(tr => {
+        const tds = Array.from(tr.querySelectorAll('td'));
+        const rowData = tds.map(td => td.textContent.trim().replace(/\s+/g, ' '));
+        const img = tr.querySelector('img');
+        rowData.push(img ? img.src : '');
+        return rowData;
+      })
+      .filter(row => row.length > 1 && row.some(c => c !== ''));
 
     return { headers, rows };
   });
@@ -257,6 +265,7 @@ function buildCsv(data) {
       sales ? `"${sales}"` : '0',
       dwell || '0',
       cleanNum(get(row, 'stock')) || '0',
+      escapeCsv(get(row, 'thumb_url')),
     ].join(','));
   });
 
