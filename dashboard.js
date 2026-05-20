@@ -140,7 +140,7 @@ function getLinks(p) {
   return `
     <span class="link-btns" style="display:inline-flex; gap:4px; margin-left:6px; vertical-align:middle;">
       <a href="https://attrangs.co.kr/shop/view.php?index_no=${idx}" target="_blank" class="link-btn" title="자사몰 보기" onclick="event.stopPropagation()">🏠</a>
-      <a href="https://at.snfg.kr/sho/index.php?code=goodsUpdate&index_no=${idx}" target="_blank" class="link-btn" title="어드민 수정" onclick="event.stopPropagation()">⚙️</a>
+      <a href="https://at.snfg.kr/order/index.php?code=sell_stat_attr&key=index_no&keyword=${idx}&mc=off" target="_blank" class="link-btn" title="어드민 통계 확인" onclick="event.stopPropagation()">⚙️</a>
     </span>
   `;
 }
@@ -200,7 +200,7 @@ function getLinks(p) {
   return `
     <span class="link-btns" style="display:inline-flex; gap:4px; margin-left:6px; vertical-align:middle;">
       <a href="https://attrangs.co.kr/shop/view.php?index_no=${idx}" target="_blank" class="link-btn" title="자사몰 보기" onclick="event.stopPropagation()">🏠</a>
-      <a href="https://at.snfg.kr/sho/index.php?code=goodsUpdate&index_no=${idx}" target="_blank" class="link-btn" title="어드민 수정" onclick="event.stopPropagation()">⚙️</a>
+      <a href="https://at.snfg.kr/order/index.php?code=sell_stat_attr&key=index_no&keyword=${idx}&mc=off" target="_blank" class="link-btn" title="어드민 통계 확인" onclick="event.stopPropagation()">⚙️</a>
     </span>
   `;
 }
