@@ -193,6 +193,16 @@ function main() {
   const raw  = fs.readFileSync(CSV_PATH, 'utf-8');
   const rows = parseCSV(raw);
 
+  let prevProducts = [];
+  if (fs.existsSync(META_PATH)) {
+    try {
+      const meta = JSON.parse(fs.readFileSync(META_PATH, 'utf-8'));
+      if (meta.prevProducts && meta.prevProducts.length > 0) {
+        prevProducts = meta.prevProducts;
+      }
+    } catch (e) {}
+  }
+
   const products = rows.map(r => {
     const p = {
       reg_date:       r[0],
@@ -208,6 +218,7 @@ function main() {
       stock:          r[10] !== undefined ? Math.round(num(r[10])) : null,
       thumb_url:      r[11] || '',
     };
+    p.is_new = (prevProducts.length > 0) ? !prevProducts.includes(p.name) : false;
     const sp = scorePurchaseRate(p.purchase_rate);
     const sc = scoreCartRate(p.cart_rate);
     const sv = scoreViews(p.views);
@@ -407,7 +418,7 @@ function main() {
     return `  { reg_date:'${p.reg_date}', name:'${p.name}',` +
       ` views:${pad(p.views)},  cart_count:${pad(p.cart_count)},  purchase_count:${pad(p.purchase_count)},` +
       `  cart_rate:${String(p.cart_rate).padStart(5)},  purchase_rate:${String(p.purchase_rate).padStart(4)},` +
-      ` total_rate:${String(p.total_rate).padStart(5)},  sales:${pad(p.sales, 8)},   dwell:${pad(p.dwell, 2)}, stock:${pad(p.stock, 3)}, thumb_url:'${p.thumb_url}'  }`;
+      ` total_rate:${String(p.total_rate).padStart(5)},  sales:${pad(p.sales, 8)},   dwell:${pad(p.dwell, 2)}, stock:${pad(p.stock, 3)}, thumb_url:'${p.thumb_url}', is_new: ${p.is_new}  }`;
   }).join(',\n');
 
   const dashboardContent = `// ─── 원본 데이터 (판매중 + 진열 필터 적용, ${todayLabel} 기준) ──────────

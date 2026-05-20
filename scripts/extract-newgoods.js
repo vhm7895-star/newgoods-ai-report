@@ -344,10 +344,20 @@ async function main() {
       };
       return { start: fmt(sdate), end: fmt(edate) };
     });
+    let prevProducts = [];
+    if (fs.existsSync(OUT_CSV)) {
+      const oldCsv = fs.readFileSync(OUT_CSV, 'utf-8').trim().split('\n');
+      for (let i = 1; i < oldCsv.length; i++) {
+        const cols = oldCsv[i].split(',');
+        if (cols.length > 1) prevProducts.push(cols[1].replace(/"/g, '').trim());
+      }
+    }
+
     const meta = {
       extractedAt: todayStr,
       periodStart: periodInfo?.start || null,
       periodEnd: todayStr,
+      prevProducts
     };
     fs.mkdirSync(path.dirname(OUT_META), { recursive: true });
     fs.writeFileSync(OUT_META, JSON.stringify(meta, null, 2), 'utf-8');

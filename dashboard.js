@@ -130,6 +130,9 @@ function tierClass(tier) {
 
 
 // ─── 딥링크 헬퍼 ──────────────────────────────────────────────────
+function getNewBadge(isNew) {
+  return isNew ? '<span class="new-badge" style="background:#ef4444; color:white; font-size:9px; padding:2px 5px; border-radius:3px; margin-left:4px; font-weight:700; vertical-align:middle; line-height:1;">NEW</span>' : '';
+}
 function getIndexNo(thumbUrl) {
   if (!thumbUrl) return '';
   const m = thumbUrl.match(/\/goods\/(\d+)\//);
@@ -248,7 +251,7 @@ document.getElementById('hero-grid').innerHTML = heroList.map(p => `
       <div class="prod-name-wrap">
         <img src="${p.thumb_url || `https://picsum.photos/seed/${p.name}/150/150`}" alt="${p.name}" class="thumb-img hero-thumb" loading="lazy" />
         <div>
-          <div class="hero-name"><span class="prod-name-text">${p.name}</span>${getLinks(p)} ${stockBadge(p.stock, p.sales)}</div>
+          <div class="hero-name"><span class="prod-name-text">${p.name}</span>${getNewBadge(p.is_new)}${getLinks(p)} ${stockBadge(p.stock, p.sales)}</div>
           <div class="hero-regdate">등록일 ${p.reg_date}</div>
         </div>
       </div>
@@ -299,7 +302,7 @@ document.getElementById('growth-grid').innerHTML = growthList.map(p => {
     <div class="growth-info">
       <div class="action-header">
         <img src="${p.thumb_url || `https://picsum.photos/seed/${p.name}/100/100`}" alt="${p.name}" class="thumb-img" loading="lazy" />
-        <div class="growth-name"><span class="prod-name-text">${p.name}</span>${getLinks(p)}</div>
+        <div class="growth-name"><span class="prod-name-text">${p.name}</span>${getNewBadge(p.is_new)}${getLinks(p)}</div>
       </div>
       <div class="growth-stats">
         <span class="stat-chip">조회 ${fmt(p.views)}</span>
@@ -454,7 +457,7 @@ document.getElementById('ad-grid').innerHTML = adList.map(p => {
   <div class="action-card ad-card">
     <div class="action-header">
       <img src="${p.thumb_url || `https://picsum.photos/seed/${p.name}/100/100`}" alt="${p.name}" class="thumb-img" loading="lazy" />
-      <div class="action-name"><span class="prod-name-text">${p.name}</span>${getLinks(p)}</div>
+      <div class="action-name"><span class="prod-name-text">${p.name}</span>${getNewBadge(p.is_new)}${getLinks(p)}</div>
     </div>
     <div class="action-stats">
       <div class="action-stat-row"><span class="action-stat-label">히어로 점수</span><span class="action-stat-val blue">${p.hero_score}점</span></div>
@@ -483,7 +486,7 @@ document.getElementById('push-grid').innerHTML = pushList.map(p => {
   <div class="action-card push-card">
     <div class="action-header">
       <img src="${p.thumb_url || `https://picsum.photos/seed/${p.name}/100/100`}" alt="${p.name}" class="thumb-img" loading="lazy" />
-      <div class="action-name"><span class="prod-name-text">${p.name}</span>${getLinks(p)}</div>
+      <div class="action-name"><span class="prod-name-text">${p.name}</span>${getNewBadge(p.is_new)}${getLinks(p)}</div>
     </div>
     <div class="action-stats">
       <div class="action-stat-row"><span class="action-stat-label">구매 미전환</span><span class="action-stat-val orange">${fmt(abandoned)}명</span></div>
@@ -509,7 +512,7 @@ document.getElementById('detail-grid').innerHTML = detailList.length === 0
   <div class="action-card detail-card">
     <div class="action-header">
       <img src="${p.thumb_url || `https://picsum.photos/seed/${p.name}/100/100`}" alt="${p.name}" class="thumb-img" loading="lazy" />
-      <div class="action-name"><span class="prod-name-text">${p.name}</span>${getLinks(p)}</div>
+      <div class="action-name"><span class="prod-name-text">${p.name}</span>${getNewBadge(p.is_new)}${getLinks(p)}</div>
     </div>
     <div class="action-stats">
       <div class="action-stat-row"><span class="action-stat-label">평균 체류시간</span><span class="action-stat-val orange">${p.dwell}초</span></div>
@@ -539,7 +542,7 @@ document.getElementById('price-grid').innerHTML = priceList.length === 0
   <div class="action-card price-card">
     <div class="action-header">
       <img src="${p.thumb_url || `https://picsum.photos/seed/${p.name}/100/100`}" alt="${p.name}" class="thumb-img" loading="lazy" />
-      <div class="action-name"><span class="prod-name-text">${p.name}</span>${getLinks(p)}</div>
+      <div class="action-name"><span class="prod-name-text">${p.name}</span>${getNewBadge(p.is_new)}${getLinks(p)}</div>
     </div>
     <div class="action-stats">
       <div class="action-stat-row"><span class="action-stat-label">장바구니 수</span><span class="action-stat-val orange">${fmt(p.cart_count)}개</span></div>
@@ -566,7 +569,7 @@ document.getElementById('stock-grid').innerHTML = stockAlertList.length === 0
   <div class="action-card stock-alert-card">
     <div class="action-header">
       <img src="${p.thumb_url || `https://picsum.photos/seed/${p.name}/100/100`}" alt="${p.name}" class="thumb-img" loading="lazy" />
-      <div class="action-name"><span class="prod-name-text">${p.name}</span>${getLinks(p)}</div>
+      <div class="action-name"><span class="prod-name-text">${p.name}</span>${getNewBadge(p.is_new)}${getLinks(p)}</div>
     </div>
     <div class="action-stats">
       <div class="action-stat-row"><span class="action-stat-label">재고</span><span class="action-stat-val red">${p.stock}개</span></div>
@@ -597,7 +600,7 @@ document.getElementById('thumb-grid').innerHTML = thumbList.length === 0
   <div class="action-card thumb-card">
     <div class="action-header">
       <img src="${p.thumb_url || `https://picsum.photos/seed/${p.name}/100/100`}" alt="${p.name}" class="thumb-img" loading="lazy" />
-      <div class="action-name"><span class="prod-name-text">${p.name}</span>${getLinks(p)}</div>
+      <div class="action-name"><span class="prod-name-text">${p.name}</span>${getNewBadge(p.is_new)}${getLinks(p)}</div>
     </div>
     <div class="action-stats">
       <div class="action-stat-row"><span class="action-stat-label">조회수</span><span class="action-stat-val red">${fmt(p.views)}회</span></div>
@@ -624,7 +627,7 @@ document.getElementById('improve-grid').innerHTML = dangerList.map(p => {
   <div class="improve-card">
     <div class="action-header">
       <img src="${p.thumb_url || `https://picsum.photos/seed/${p.name}/100/100`}" alt="${p.name}" class="thumb-img" loading="lazy" />
-      <div class="improve-name"><span class="prod-name-text">${p.name}</span>${getLinks(p)}</div>
+      <div class="improve-name"><span class="prod-name-text">${p.name}</span>${getNewBadge(p.is_new)}${getLinks(p)}</div>
     </div>
     <div class="improve-score">${p.hero_score}<span>점</span></div>
     <div class="improve-issue">${issue}<br/>조회 ${fmt(p.views)} · 구매 ${p.purchase_rate}%</div>
@@ -658,7 +661,7 @@ function renderTable() {
       <td class="prod-name">
         <div class="prod-name-wrap">
           <img src="${p.thumb_url || `https://picsum.photos/seed/${p.name}/100/100`}" alt="${p.name}" class="thumb-img table-thumb" loading="lazy" />
-          <div><span class="prod-name-text">${p.name}</span>${getLinks(p)}<br/><span style="font-size:10px;color:#555">${p.reg_date}</span></div>
+          <div><span class="prod-name-text">${p.name}</span>${getNewBadge(p.is_new)}${getLinks(p)}<br/><span style="font-size:10px;color:#555">${p.reg_date}</span></div>
         </div>
       </td>
       <td>
