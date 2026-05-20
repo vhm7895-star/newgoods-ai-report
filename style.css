@@ -786,3 +786,22 @@ body {
   pointer-events: none; /* 마우스 이벤트 무시하여 깜빡임 방지 */
   transform: translateZ(0); /* 하드웨어 가속 */
 }
+
+/* ── Deep Links ── */
+.link-btn {
+  text-decoration: none;
+  font-size: 13px;
+  opacity: 0.5;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.link-btn:hover {
+  opacity: 1;
+  transform: scale(1.15);
+}
+.prod-name-text {
+  font-weight: 600;
+  color: var(--text);
+}

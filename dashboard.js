@@ -127,6 +127,24 @@ function tierClass(tier) {
   return { 'HERO': 'tier-hero', '성장 가능': 'tier-growth', '관찰 필요': 'tier-watch', '개선 필요': 'tier-danger' }[tier] || '';
 }
 
+
+// ─── 딥링크 헬퍼 ──────────────────────────────────────────────────
+function getIndexNo(thumbUrl) {
+  if (!thumbUrl) return '';
+  const m = thumbUrl.match(/\/goods\/(\d+)\//);
+  return m ? m[1] : '';
+}
+function getLinks(p) {
+  const idx = getIndexNo(p.thumb_url);
+  if (!idx) return '';
+  return `
+    <span class="link-btns" style="display:inline-flex; gap:4px; margin-left:6px; vertical-align:middle;">
+      <a href="https://attrangs.co.kr/shop/view.php?index_no=${idx}" target="_blank" class="link-btn" title="자사몰 보기" onclick="event.stopPropagation()">🏠</a>
+      <a href="https://at.snfg.kr/sho/index.php?code=goodsUpdate&index_no=${idx}" target="_blank" class="link-btn" title="어드민 수정" onclick="event.stopPropagation()">⚙️</a>
+    </span>
+  `;
+}
+
 function tierLabel(tier) {
   return { 'HERO': '⭐ HERO', '성장 가능': '🔼 성장 가능', '관찰 필요': '➡️ 관찰 필요', '개선 필요': '🔽 개선 필요' }[tier] || tier;
 }
@@ -622,7 +640,7 @@ function renderTable() {
       <td class="prod-name">
         <div class="prod-name-wrap">
           <img src="${p.thumb_url || `https://picsum.photos/seed/${p.name}/100/100`}" alt="${p.name}" class="thumb-img table-thumb" loading="lazy" />
-          <div>${p.name}<br/><span style="font-size:10px;color:#555">${p.reg_date}</span></div>
+          <div><span class="prod-name-text">${p.name}</span>${getLinks(p)}<br/><span style="font-size:10px;color:#555">${p.reg_date}</span></div>
         </div>
       </td>
       <td>
