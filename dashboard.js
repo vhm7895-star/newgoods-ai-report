@@ -667,3 +667,43 @@ document.getElementById('tier-filter').addEventListener('change', e => {
   filterTier = e.target.value;
   renderTable();
 });
+
+// ─── 이미지 미리보기 (Tooltip) ──────────────────────────────
+(function initImagePreview() {
+  const tooltip = document.createElement('div');
+  tooltip.className = 'img-preview-tooltip';
+  document.body.appendChild(tooltip);
+
+  document.body.addEventListener('mouseover', (e) => {
+    if (e.target.classList.contains('thumb-img') || e.target.classList.contains('table-thumb')) {
+      // 픽섬 더미 이미지인 경우 고해상도로 교체, 실제 이미지는 그대로 사용
+      let src = e.target.src;
+      if (src.includes('picsum.photos')) {
+        src = src.replace(/\/\d+\/\d+$/, '/300/300');
+      } else {
+        // 아뜨랑스 CDN인 경우 t50(작은썸네일)을 t300(큰썸네일)로 교체 시도 (옵션)
+        src = src.replace('t50.', 't300.');
+      }
+      tooltip.style.backgroundImage = `url(${src})`;
+      tooltip.style.display = 'block';
+    }
+  });
+
+  document.body.addEventListener('mousemove', (e) => {
+    if (tooltip.style.display === 'block') {
+      let x = e.clientX + 15;
+      let y = e.clientY + 15;
+      const size = 300; // 툴팁 크기
+      if (x + size > window.innerWidth) x = e.clientX - size - 15;
+      if (y + size > window.innerHeight) y = e.clientY - size - 15;
+      tooltip.style.left = x + 'px';
+      tooltip.style.top = y + 'px';
+    }
+  });
+
+  document.body.addEventListener('mouseout', (e) => {
+    if (e.target.classList.contains('thumb-img') || e.target.classList.contains('table-thumb')) {
+      tooltip.style.display = 'none';
+    }
+  });
+})();
