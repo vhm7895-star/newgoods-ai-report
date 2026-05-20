@@ -681,8 +681,8 @@ document.getElementById('tier-filter').addEventListener('change', e => {
       if (src.includes('picsum.photos')) {
         src = src.replace(/\/\d+\/\d+$/, '/300/300');
       } else {
-        // 아뜨랑스 CDN인 경우 t50(작은썸네일)을 t300(큰썸네일)로 교체 시도 (옵션)
-        src = src.replace('t50.', 't300.');
+        // 아뜨랑스 원본 큰 이미지는 't50.' 이 없는 원본 파일명입니다.
+        src = src.replace('t50.', '');
       }
       tooltip.style.backgroundImage = `url(${src})`;
       tooltip.style.display = 'block';
