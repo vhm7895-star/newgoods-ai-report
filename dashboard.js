@@ -693,9 +693,10 @@ document.getElementById('tier-filter').addEventListener('change', e => {
     if (tooltip.style.display === 'block') {
       let x = e.clientX + 15;
       let y = e.clientY + 15;
-      const size = 300; // 툴팁 크기
-      if (x + size > window.innerWidth) x = e.clientX - size - 15;
-      if (y + size > window.innerHeight) y = e.clientY - size - 15;
+      const tooltipWidth = 320; // 툴팁 가로 크기
+      const tooltipHeight = 472; // 툴팁 세로 크기
+      if (x + tooltipWidth > window.innerWidth) x = e.clientX - tooltipWidth - 15;
+      if (y + tooltipHeight > window.innerHeight) y = e.clientY - tooltipHeight - 15;
       tooltip.style.left = x + 'px';
       tooltip.style.top = y + 'px';
     }
